@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="/styles/style.css">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"/>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+    <title>Dashboard</title>
+</head>
+<body>
+
+    <div class="dashboard-shell">
+        <!-- Sidebar starts here -->
+        <aside>
+            <div class="sidebar-container d-flex flex-column">
+                <div class="sidebar-header d-flex">
+                    <div class="logo">
+                        <img src="/assets/logo/smartsakaylogo.png" alt="logo" class="img-fluid">
+                    </div>
+                    <div class="d-flex flex-column">
+                        <span class="title">Smart Sakay</span>
+                        <span class="sub">LGU Admin Portal</span>
+                    </div>
+                </div>
+
+                <nav class="sidebar-nav d-flex flex-column">
+                    <div class="nav-section-label">MAIN</div>
+                    <a class="nav-item active" data-page="dashboard">
+                        <i class="bi bi-grid-1x2-fill"></i><span>Dashboard</span>
+                    </a>
+                    <a class="nav-item" data-page="trips">
+                        <i class="bi bi-map-fill"></i><span>Trips</span>
+                    </a>
+                    <div class="nav-section-label">MANAGEMENT</div>
+                    <a class="nav-item" data-page="drivers">
+                        <i class="bi bi-person-badge-fill"></i><span>Drivers</span>
+                    </a>
+                    <a class="nav-item" data-page="vehicles">
+                        <i class="bi bi-truck-front-fill"></i><span>Vehicles</span>
+                    </a>
+                    <a class="nav-item" data-page="routes">
+                        <i class="bi bi-signpost-split-fill"></i><span>Routes & Stops</span>
+                    </a>
+                    <a class="nav-item" data-page="fare">
+                        <i class="bi bi-cash-coin"></i><span>Fare Policy</span>
+                    </a>
+                    <div class="nav-section-label">ANALYTICS</div>
+                    <a class="nav-item" data-page="logs">
+                        <i class="bi bi-journal-text"></i><span>Passenger Logs</span>
+                    </a>
+                    <a class="nav-item" data-page="reports">
+                        <i class="bi bi-bar-chart-fill"></i><span>Reports</span>
+                    </a>
+                </nav>
+
+                <div class="sidebar-footer">
+                    <div class="admin-chip">
+                        <div class="admin-avatar">
+                            <img src="/assets/images/olygwapo.jpg" alt="" class="img-fluid rounded-5">
+                        </div>
+                        <div class="admin-name">
+                            <span>Admin User</span>
+                            <span style="color: rgba(255,255,255,0.7); font-weight: normal;">LGU Transportation Office</span>
+                        </div>
+                        <div class="logout-btn">
+                            <a href=""><i class="bi bi-box-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        <!-- Topbar starts here -->
+        <header class="topbar d-flex justify-content-between align-items-center">
+            <div class="topbar-left">
+                <button class="btn-sidebar-toggle" type="button" onclick="toggleSidebar()">
+                    <i class="bi bi-list"></i>
+                </button>
+                <div class="page">
+                    <span>Dashboard</span>
+                </div>
+            </div>
+
+            <div class="topbar-right">
+                <div class="realtime-indicator">
+                    <span class="pulse-dot"></span>
+                    <span>Live Monitoring</span>
+                </div>
+                <div class="topbar-date" id="topbarDate">
+
+                </div>
+                <div class="btn-notif">
+                    <i class="bi bi-bell-fill"></i>
+                </div>
+            </div>
+        </header>
+        <!-- Main content starts here -->
+        <main class="dashboard-content">
+            <div class="page-header d-flex justify-content-between mb-3">
+                <h1 class="page-title">Dashboard Overview</h1>
+                <p class="page-subtitle">Real-time transportation data for today</p>
+            </div>
+
+            <!-- Stat cards -->
+             <div class="row g-4 mb-4">
+                <div class="col-xl-3 col-md-6">
+                    <div class="card stat-card stat-card--primary rounded-4">
+                        <div class="card-body">
+                            <div class="stat-icon"><i class="bi bi-map-fill"></i></div>
+                            <div class="stat-body d-flex flex-column">
+                                <span class="stat-value">0</span>
+                                <span class="stat-label">Total Trips Today</span>
+                                <span class="stat-change"><i class="bi bi-arrow-up-short"></i>12% vs yesterday</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="card stat-card stat-card--secondary rounded-4">
+                        <div class="card-body">
+                            <div class="stat-icon"><i class="bi bi-people-fill"></i></div>
+                            <div class="stat-body d-flex flex-column">
+                                <span class="stat-value">0</span>
+                                <span class="stat-label">Total Passengers</span>
+                                <span class="stat-change"><i class="bi bi-arrow-up-short"></i>12% vs yesterday</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="card stat-card stat-card--success rounded-4">
+                        <div class="card-body">
+                            <div class="stat-icon"><i class="bi bi-cash-stack"></i></div>
+                            <div class="stat-body d-flex flex-column">
+                                <span class="stat-value">0</span>
+                                <span class="stat-label">Total Revenue</span>
+                                <span class="stat-change"><i class="bi bi-arrow-up-short"></i>12% vs yesterday</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="card stat-card stat-card--active rounded-4">
+                        <div class="card-body">
+                            <div class="stat-icon"><i class="bi bi-activity"></i></div>
+                            <div class="stat-body d-flex flex-column">
+                                <span class="stat-value">0</span>
+                                <span class="stat-label">Active trips now</span>
+                                <div class="stat-change live-text"><span class="pulse-dot-small"></span>Updating live</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+             </div>
+
+             <!-- Passenger type breakdown -->
+              <div class="row mb-4">
+                <div class="col-xl-4 col-md-6">
+                    <div class="card mini-card--secondary passenger-card rounded-4">
+                        <div class="card-body">
+                            <div class="mini-icon bg-student"><i class="bi bi-mortarboard-fill"></i></div>
+                            <div class="d-flex flex-column">
+                                <span class="passenger-value">0</span>
+                                <span class="passenger-type">Students</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-md-6">
+                    <div class="card mini-card--primary passenger-card rounded-4">
+                        <div class="card-body">
+                            <div class="mini-icon bg-regular"><i class="bi bi-person-fill"></i></div>
+                            <div class="d-flex flex-column">
+                                <span class="passenger-value">0</span>
+                                <span class="passenger-type">Students</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-md-6">
+                    <div class="card mini-card--success passenger-card rounded-4">
+                        <div class="card-body">
+                            <div class="mini-icon bg-senior"><i class="bi bi-person-raised-hand"></i></div>
+                            <div class="d-flex flex-column">
+                                <span class="passenger-value">0</span>
+                                <span class="passenger-type">Students</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              </div>
+              <!-- Charts -->
+                <div class="row g-4">
+                <div class="col-xl-8">
+                    <div class="chart-card">
+                    <div class="chart-header">
+                        <div>
+                        <div class="chart-title">Hourly Passenger Flow</div>
+                        <div class="chart-sub">Boarding vs Drop-off per hour</div>
+                        </div>
+                    </div>
+                        <canvas id="hourlyChart" height="100"></canvas>
+                    </div>
+                </div>
+                <div class="col-xl-4">
+                    <div class="chart-card">
+                    <div class="chart-header">
+                        <div>
+                        <div class="chart-title">Passenger Breakdown</div>
+                        <div class="chart-sub">By passenger type today</div>
+                        </div>
+                    </div>
+                        <canvas id="typeChart" height="160"></canvas>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/scripts/main.js"></script>
+</body>
+</html>
