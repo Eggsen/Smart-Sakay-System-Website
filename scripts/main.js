@@ -4,10 +4,11 @@
 function updateClock() {
   const now = new Date();
   const opts = { weekday:'short', year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit' };
-  document.getElementById('topbarDate').textContent = now.toLocaleString('en-PH', opts);
+  const topbarDateEl = document.getElementById('topbarDate');
+  if (topbarDateEl) topbarDateEl.textContent = now.toLocaleString('en-PH', opts);
 }
 setInterval(updateClock, 1000);
-updat
+updateClock();
 
 // ============================================================
 // SIDEBAR TOGGLE
@@ -46,7 +47,55 @@ function toggleSidebar() {
 }
 
 window.addEventListener('resize', applySidebarState);
-document.addEventListener('DOMContentLoaded', applySidebarState);
+
+// FETCH SIDEBAR
+function loadSidebar() {
+  fetch('includes/sidebar.html')
+    .then((res) => {
+      if (!res.ok) throw new Error('Network response was not ok');
+      return res.text();
+    })
+    .then((html) => {
+      const placeholder = document.getElementById('sidebar-placeholder');
+      if (!placeholder) return;
+      placeholder.innerHTML = html;
+      // Re-apply sidebar state now that the sidebar exists
+      applySidebarState();
+    })
+    .catch((err) => console.error('Failed to load sidebar:', err));
+}
+
+function loadTopbar() {
+  fetch('includes/topbar.html')
+    .then((res) => {
+      if (!res.ok) throw new Error('Network response was not ok');
+      return res.text();
+    })
+    .then((html) => {
+      const placeholder = document.getElementById('topbar-placeholder');
+      if (!placeholder) return;
+      placeholder.innerHTML = html;
+      // Populate the clock now that topbar was injected
+      updateClock();
+      // Set topbar page name dynamically from document.title or URL
+      const pageSpan = placeholder.querySelector('.page span');
+      let pageText = (document.title || '').trim();
+      if (!pageText) {
+        const path = window.location.pathname.split('/').pop() || '';
+        pageText = path.replace('.html', '').replace(/[-_]/g, ' ');
+        pageText = pageText ? pageText.charAt(0).toUpperCase() + pageText.slice(1) : 'Dashboard';
+      }
+      if (pageSpan) pageSpan.textContent = pageText;
+      // Re-apply sidebar state in case topbar layout depends on sidebar width
+      applySidebarState();
+    })
+    .catch((err) => console.error('Failed to load topbar:', err));
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadSidebar();
+  loadTopbar();
+});
 
 
 // ====

@@ -22,6 +22,8 @@
   --shadow:        0 2px 16px rgba(11,72,111,0.10);
   --shadow-md:     0 4px 24px rgba(11,72,111,0.14);
   --transition:    0.22s ease; 
+  --primary-font: 'Plus Jakarta Sans', sans-serif;
+  --secondary-font: 'DM Mono', monospace;
 }
 
 body {
@@ -44,7 +46,20 @@ a { text-decoration: none; cursor: pointer; }
     min-height: 100vh;
 }
 
-/* ============ SIDEBAR ============ */
+main {
+    padding: 0px 24px;
+}
+
+.main-content {
+    margin-left: var(--sidebar-current);
+    padding-top: calc(var(--navbar-h) + 24px);
+    transition: margin-left var(--transition);
+}
+
+/* // ============================================================
+// SIDEBAR
+// ============================================================ */
+
 .sidebar-container {
     background-color: var(--secondary);
     width: var(--sidebar-w);
@@ -202,7 +217,9 @@ a { text-decoration: none; cursor: pointer; }
     }
 }
 
-/* ============ TOPBAR ============ */
+/* // ============================================================
+// TOPBAR
+// ============================================================ */
 
 .topbar {
     position: fixed;
@@ -275,16 +292,9 @@ a { text-decoration: none; cursor: pointer; }
     font-size: 1.4rem;
 }
 
-/* ============ DASHBOARD MAIN CONTENT ============ */
-main {
-    padding: 0px 24px;
-}
-
-.dashboard-content {
-    margin-left: var(--sidebar-current);
-    padding-top: calc(var(--navbar-h) + 24px);
-    transition: margin-left var(--transition);
-}
+/* // ============================================================
+// DASHBOARD PAGE
+// ============================================================ */
 
 /* Page header */
 
@@ -418,6 +428,10 @@ main {
 .chart-title { font-size: 0.95rem; font-weight: 700; color: var(--text-main); }
 .chart-sub { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
 
+/* // ============================================================
+// TRIPS PAGE
+// ============================================================ */
+
 /* ---------- TABLE CARD ---------- */
 .table-card {
   background: var(--white);
@@ -441,13 +455,119 @@ main {
   padding: 14px 16px;
   border: none;
 }
-.smart-table tbody tr {
-  transition: background var(--transition);
+
+/* // ============================================================
+// DRIVERS PAGE
+// ============================================================ */
+
+
+
+/* // ============================================================
+// VEHICLES PAGE
+// ============================================================ */
+
+/* // ============================================================
+// ROUTES & STOPS PAGE
+// ============================================================ */
+
+/* Page header */
+
+.btn-primary-action {
+    background-color: var(--primary);
+    color: var(--white);
+    border-radius: var(--radius-sm);
+    height: 42px;
+    width: 130px;
+    font-family: var(--primary-font);
+    font-size: 0.80rem;
+    font-weight: 800;
 }
-.smart-table tbody tr:hover { background: rgba(11,72,111,0.04); }
-.smart-table td {
-  padding: 13px 16px;
-  vertical-align: middle;
-  border-color: var(--border);
-  color: var(--text-main);
+
+/* Route cards */
+
+.card-header {
+    background-color: var(--secondary);
+    border-radius: 1.5rem;
+    color: var(--white);
 }
+
+/* // ============================================================
+// FARE POLICY PAGE
+// ============================================================ */
+
+/* Card header */
+.card-header {
+    font-weight: 600;
+}
+
+.fare-card-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: var(--primary-font);
+}
+
+.fare-policy-card {
+    box-shadow: var(--shadow);
+}
+
+/* Card body */
+
+.fare-card {
+    display: flex;
+    align-items: center;
+    width: 300px;
+    padding: 18px 0px;
+    background-color: rgba(179, 179, 179, 0.165);
+    color: var(--secondary);
+}
+
+.passenger-type-fare {
+    font-size: 0.88rem;
+    margin: 10px 0px;
+}
+
+.fare-card-student { border: 0.5px solid var(--secondary); }
+.fare-card-regular { border: 0.5px solid var(--primary); }
+.fare-card-senior { border: 0.5px solid var(--success); }
+
+.fare-value {
+    font-size: 2.1rem;
+    font-weight: 800;
+    font-family: var(--secondary-font);
+}
+
+.edit-fare-btn {
+    width: 200px;
+    background-color: var(--primary);
+    font-weight: 700;
+    font-size: 0.90em;
+    padding-left: 0px;
+}
+
+.edit-fare-btn:hover {
+    background-color: var(--primary-light);
+}
+
+/* Card footer */
+
+.card-footer {
+    background: rgba(11, 72, 111, 0.05);
+    color: var(--text-muted);
+}
+
+.info-icon i{
+    background-color: var(--secondary);
+}
+
+.card-footer span {
+    font-size: 0.90rem;
+}
+
+/* // ============================================================
+// PASSENGER LOGS PAGE
+// ============================================================ */
+
+/* // ============================================================
+// REPORTS PAGE
+// ============================================================ */

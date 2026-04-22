@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="/styles/style.css">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"/>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+    <title>Routes</title>
+</head>
+<body>
+    
+    <!-- Sidebar loaded -->
+    <div id="sidebar-placeholder"></div>
+    <!-- Topbar loaded -->
+    <div id="topbar-placeholder"></div>
+
+    <!-- Main content starts here -->
+    <main class="main-content">
+        <div class="page-header mb-4 d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="page-title">Routes & Stops</h1>
+                <p class="page-subtitle">Manage transport routes and waypoints</p>
+            </div>
+            <button class="btn btn-primary-action" onclick="openRouteModal()">
+                <i class="bi bi-plus-lg"></i> Add Route
+            </button>
+        </div>
+
+        <!-- Route cards -->
+        <div class="row g-4">
+            <div class="col-xl-4 col-md-6">
+                <div class="card route-card rounded-4">
+                    <div class="card-header rounded-top-4">
+                        <h2>this is a card header</h2>
+                    </div>
+                    <div class="card-body">
+                        <h2>this is a card bpdy</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-md-6">
+                <div class="card route-card rounded-4">
+                    <div class="card-header rounded-top-4">
+                        <h2>this is a card header</h2>
+                    </div>
+                    <div class="card-body">
+                        <h2>this is a card bpdy</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-md-6">
+                <div class="card route-card rounded-4">
+                    <div class="card-header rounded-top-4">
+                        <h2>this is a card header</h2>
+                    </div>
+                    <div class="card-body">
+                        <h2>this is a card bpdy</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="/scripts/main.js"></script>
+</body>
+</html>
