@@ -320,7 +320,10 @@ main {
 .stat-card{
     padding: 12px 16px;
     box-shadow: var(--shadow);
+    transition: var(--transition);
 }
+
+.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
 
 .stat-body {
     gap: 6px;
@@ -382,6 +385,9 @@ main {
 .passenger-card {
     padding: 12px 16px;
     box-shadow: var(--shadow);
+}
+.mini-card-body {
+    align-items: center;
 }
 
 .mini-icon {
@@ -543,10 +549,12 @@ main {
     font-weight: 700;
     font-size: 0.90em;
     padding-left: 0px;
+    transition: var(--transition);
 }
 
 .edit-fare-btn:hover {
-    background-color: var(--primary-light);
+    background-color: var(--primary-dark);
+    transform: translateY(-1px); 
 }
 
 /* Card footer */

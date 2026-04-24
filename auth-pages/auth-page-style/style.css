@@ -1,0 +1,149 @@
+:root {
+  --primary:       #FF7043;
+  --primary-light: #FF8A65;
+  --primary-dark:  #E64A19;
+  --secondary:     #0b486f;
+  --secondary-light: #1a6fa0;
+  --secondary-dark:  #072f48;
+  --bg:            #f4f6f9;
+  --white:         #ffffff;
+  --text-main:     #1a2230;
+  --text-muted:    #6c7a8d;
+  --border:        #e3e8ef;
+  --success:       #2ecc71;
+  --danger:        #e74c3c;
+  --warning:       #f39c12;
+  --sidebar-w:     260px;
+  --sidebar-collapsed: 0px;
+  --sidebar-current: var(--sidebar-w);
+  --navbar-h:      64px;
+  --radius:        12px;
+  --radius-sm:     8px;
+  --shadow:        0 2px 16px rgba(11,72,111,0.10);
+  --shadow-md:     0 4px 24px rgba(11,72,111,0.14);
+  --transition:    0.22s ease; 
+  --primary-font: 'Plus Jakarta Sans', sans-serif;
+  --secondary-font: 'DM Mono', monospace;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)),
+    url("/assets/images/auth-page-bg.png") center/cover no-repeat;
+    display: flex; justify-content: center; align-items: center;
+    font-family: var(--primary-font);
+}
+
+a {
+    text-decoration: none;
+}
+
+.auth-card {
+    overflow: hidden;
+    position: relative;
+    box-shadow: var(--shadow);
+}
+
+/* Landing page */
+
+.selection-header h4{
+    font-weight: 600;
+    color: var(--secondary);
+}
+
+.selection-header i{
+    color: var(--text-muted);
+}
+
+.options-btn a{
+    background-color: var(--secondary);
+    color: var(--white);
+    font-weight: 600;
+    border-radius: var(--radius);
+}
+
+.options-btn a:hover {
+    background-color: var(--secondary-dark);
+    color: var(--white);
+}
+
+/* Left side */
+
+.form-header {
+    padding: 24px;
+}
+
+.left-side {
+    width: 400px;
+    height: 500px;
+}
+
+.logo-box {
+    background-color: var(--primary);
+    border-radius: var(--radius-sm);
+    padding: 6px;
+}
+
+.header img {
+    width: 35px;
+    height: 35px;
+}
+
+.header span {
+    font-size: 0.85rem;
+}
+
+.title {
+    font-weight: 600;
+    color: var(--secondary);
+}
+
+.title span{
+    color: var(--primary);
+}
+
+label {
+    font-weight: 600;
+    color: var(--secondary);
+}
+
+.login-btn {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--white);
+    background-color: var(--primary);
+}
+
+.login-btn:hover {
+    background-color: var(--primary-dark);
+    color: var(--white);
+}
+
+/* Right side */
+
+.right-side {
+    width: 400px;
+    height: 500px;
+    background: url("/assets/images/smart-sakay-bg-2.png") center/cover no-repeat;
+}   
+
+.mockup-img img {
+    width: 250px;
+    height:180px;
+}
+
+.subtitle {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--secondary);
+}
+
+.subtitle-2 {
+    width: 270px; text-align: center;
+}
+
+i {
+    color: var(--primary);
+}
