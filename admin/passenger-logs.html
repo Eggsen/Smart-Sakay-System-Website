@@ -18,6 +18,47 @@
     <!-- Topbar loaded -->
     <div id="topbar-placeholder"></div>
 
+    <!-- Main content starts here -->
+    <main class="main-content">
+        <div class="page-header d-flex justify-content-between align-items-center mb-4">
+            <div class="left-header">
+                <h1 class="page-title">Passenger Flow Logs</h1>
+                <p class="page-subtitle">All boarding and drop-off events</p>
+            </div>
+            <div class="right-header d-flex gap-3">
+                <select class="form-select form-select-sm filter-select" name="" id="">
+                    <option value="">All Actions</option>
+                    <option value="Board">Board</option>
+                    <option value="Drop">Drop</option>
+                </select>
+                <select class="form-select filter-select" name="" id="">
+                    <option value="">All Types</option>
+                    <option value="Student">Board</option>
+                    <option value="Regular">Regular</option>
+                    <option value="Senior">Senior Citizen</option>
+                </select>
+            </div>
+        </div>
+        <!-- Table starts here -->
+        <div class="table-card">
+            <table class="table smart-table">
+                <thead>
+                    <tr>
+                        <th>TIME STAMP</th>
+                        <th>TRIP ID</th>
+                        <th>PASSENGER TYPE</th>
+                        <th>ACTION</th>
+                        <th>QUANTITY</th>
+                        <th>STOP</th>
+                        <th>PAYMENT</th>
+                    </tr>
+                </thead>    
+                <tbody>
+                    <!-- Table content here -->
+                </tbody>
+            </table>
+        </div>
+    </main>
 
     <script src="/scripts/main.js"></script>
 </body>
