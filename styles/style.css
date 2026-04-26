@@ -533,20 +533,6 @@ main {
     font-size: 0.7rem;
 }
 
-.btn-tbl-view {
-    background-color: var(--secondary-pale);
-    border: none;
-    padding: 4px 8px;
-    color: var(--secondary);
-    border-radius: 6px;
-    transition: var(--transition);
-}
-
-.btn-tbl-view:hover {
-    background-color: var(--secondary-dark);
-    color: var(--white);
-}
-
 /* Trip details */
 
 /* Page header */
@@ -883,4 +869,164 @@ main {
     font-size: 0.90rem;
     font-weight: 400;
     color: var(--secondary);
+}
+
+/* MODALS */
+/* ---------- MODALS ---------- */
+
+.smart-modal {
+    border: none;
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.18);
+}
+
+.smart-modal .modal-header {
+    background: var(--secondary);
+    color: #fff;
+    border: none;
+    padding: 18px 22px;
+}
+
+.smart-modal .modal-title {
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.smart-modal .modal-body {
+    padding: 22px;
+    background: #fff;
+}
+
+.smart-modal .modal-footer {
+    background: var(--bg);
+    border: none;
+    padding: 14px 22px;
+}
+
+.smart-input {
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 9px 13px;
+    font-size: 0.87rem;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    color: var(--text-main);
+    transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.smart-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(255, 112, 67, 0.14);
+    outline: none;
+}
+
+.form-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--secondary);
+    margin-bottom: 6px;
+}
+
+.btn-save {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    padding: 9px 22px;
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+    font-size: 0.87rem;
+    cursor: pointer;
+    transition: background var(--transition);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.btn-save:hover {
+    background: var(--primary-dark);
+}
+
+.btn-cancel {
+    background: none;
+    color: var(--text-muted);
+    border: 1.5px solid var(--border);
+    padding: 9px 22px;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 0.87rem;
+    cursor: pointer;
+    transition: all var(--transition);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.btn-cancel:hover {
+    background: var(--bg);
+}
+
+/* Delete Modal */
+.delete-icon {
+    font-size: 2.8rem;
+    color: var(--danger);
+    margin-bottom: 10px;
+}
+
+.delete-title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.delete-msg {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.btn-delete-confirm {
+    background: var(--danger);
+    color: #fff;
+    border: none;
+    padding: 9px 22px;
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+    font-size: 0.87rem;
+    cursor: pointer;
+    transition: background var(--transition);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.btn-delete-confirm:hover {
+    background: #c0392b;
+}
+
+/* Universal action button styles */
+.btn-tbl-view {
+    background-color: var(--secondary-pale);
+    border: none;
+    padding: 4px 8px;
+    color: var(--secondary);
+    border-radius: 6px;
+    transition: var(--transition);
+}
+
+.btn-tbl-view:hover {
+    background-color: var(--secondary-dark);
+    color: var(--white);
+}
+
+.btn-tbl-edit {
+    background: rgba(255, 112, 67, 0.10);
+    color: var(--primary);
+}
+
+.btn-tbl-edit:hover {
+    background: var(--primary);
+    color: #fff;
+}
+
+.btn-tbl-delete {
+    background: rgba(231, 76, 60, 0.10);
+    color: var(--danger);
+}
+
+.btn-tbl-delete:hover {
+    background: var(--danger);
+    color: #fff;
 }

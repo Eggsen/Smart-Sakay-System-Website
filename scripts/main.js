@@ -328,3 +328,199 @@ $(function() {
 
     $('#btnBack').on('click', showList);
 });
+
+// ============================================================
+// DRIVERS-PAGE DATA
+// ============================================================
+
+let driversData = [];
+
+function loadDrivers() {
+    $.ajax({
+        url: "../api/drivers.php",
+        method: "GET",
+        dataType: "json",
+        success: function (data) {
+            driversData = data;
+            renderDrivers(data);
+        },
+        error: function (err) {
+            console.error("Failed to fetch drivers:", err);
+        }
+    });
+}
+
+function renderDrivers(data) {
+    if (data.length === 0) {
+        $('#driversTableBody').html(`
+            <tr>
+                <td colspan="6" class="text-center text-muted py-4">
+                    No drivers found.
+                </td>
+            </tr>
+        `);
+        return;
+    }
+
+    const rows = data.map((d, index) => {
+        return `
+            <tr class="text-center"  data-id="${d.id}">
+                <td>${index + 1}</td>
+                <td>${d.name}</td>
+                <td class="fw-mono">${d.license}</td>
+                <td>${d.contact}</td>
+                <td>
+                    <span class="status-badge ${d.status.toLowerCase().replace(' ', '-')}">
+                        ${d.status}
+                    </span>
+                </td>
+                <td>
+                    <button class="btn btn-tbl btn-tbl-edit">
+                        <i class="bi bi-pencil-fill"></i>
+                    </button>
+                    <button class="btn btn-tbl btn-tbl-delete">
+                        <i class="bi bi-trash-fill"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+    }).join('');
+
+    $('#driversTableBody').html(rows);
+}
+
+$(function () {
+    loadDrivers();
+});
+
+// MODALS
+
+$('#btnAddDriver').on('click', function () {
+
+    $('#driverEditId').val('');
+    $('#driverName').val('');
+    $('#driverLicense').val('');
+    $('#driverContact').val('');
+    $('#driverStatus').val('Active');
+
+    $('#driverModalTitle').text('Add Driver');
+
+    $('#driverModal').modal('show');
+});
+
+$(document).on('click', '.btn-tbl-edit', function () {
+
+    const row = $(this).closest('tr');
+    const id = row.data('id');
+
+    // Find driver from array
+    const driver = driversData.find(d => d.id == id);
+
+    if (!driver) return;
+
+    $('#driverEditId').val(driver.id);
+    $('#driverName').val(driver.name);
+    $('#driverLicense').val(driver.license);
+    $('#driverContact').val(driver.contact);
+    $('#driverStatus').val(driver.status);
+
+    $('#driverModalTitle').text('Edit Driver');
+
+    const modal = new bootstrap.Modal(document.getElementById('driverModal'));
+    modal.show();
+});
+
+// SAVE DRIVER
+function saveDriver() {
+    const id = $('#driverEditId').val();
+    const name = $('#driverName').val().trim();
+    const license = $('#driverLicense').val().trim();
+    const contact = $('#driverContact').val().trim();
+    const status = $('#driverStatus').val();
+
+    // Simple validation
+    if (!name || !license || !contact) {
+        alert("Please fill all fields.");
+        return;
+    }
+
+    $.ajax({
+        url: "../api/save-driver.php",
+        method: "POST",
+        data: {
+            id: id,
+            name: name,
+            license: license,
+            contact: contact,
+            status: status
+        },
+        success: function (res) {
+            alert(res);
+
+            // Close modal
+            const modalEl = document.getElementById('driverModal');
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            modal.hide();
+
+            loadDrivers(); // reload table
+        },
+        error: function (err) {
+            console.error(err);
+        }
+    });
+}
+
+// DELETE DRIVER
+function confirmDelete(type, id, label) {
+
+    $('#deleteMsg').text(`Delete "${label}"? This action cannot be undone.`);
+
+    $('#deleteConfirmBtn').off('click');
+
+    $('#deleteConfirmBtn').on('click', function () {
+
+        let url = "";
+
+        // Decide API based on type
+        if (type === 'driver') url = "../api/delete-driver.php";
+        if (type === 'vehicle') url = "../api/delete-vehicle.php";
+        if (type === 'route') url = "../api/delete-route.php";
+
+        $.ajax({
+            url: url,
+            method: "POST",
+            data: { id: id },
+
+            success: function (res) {
+
+                // Reload correct UI
+                if (type === 'driver') loadDrivers();
+                if (type === 'vehicle') loadVehicles();
+                if (type === 'route') loadRoutes();
+
+                // Close modal
+                bootstrap.Modal.getInstance(document.getElementById('deleteModal')).hide();
+
+                // Show success message
+                showToast(label + " deleted.");
+            },
+
+            error: function (err) {
+                console.error(err);
+                showToast("Delete failed.");
+            }
+        });
+
+    });
+
+    new bootstrap.Modal(document.getElementById('deleteModal')).show();
+}
+
+$(document).on('click', '.btn-tbl-delete', function () {
+    const row = $(this).closest('tr');
+
+    const id = row.data('id');
+    const name = row.find('td:eq(1)').text(); // driver name column
+
+    confirmDelete('driver', id, name);
+});

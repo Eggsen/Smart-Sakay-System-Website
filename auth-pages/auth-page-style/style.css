@@ -31,7 +31,7 @@ body {
     padding: 0;
     height: 100vh;
     background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)),
-    url("/assets/images/auth-page-bg.png") center/cover no-repeat;
+    url("../../assets/images/auth-page-bg.png") center/cover no-repeat;
     display: flex; justify-content: center; align-items: center;
     font-family: var(--primary-font);
 }
@@ -126,7 +126,7 @@ label {
 .right-side {
     width: 400px;
     height: 500px;
-    background: url("/assets/images/smart-sakay-bg-2.png") center/cover no-repeat;
+    background: url("../../assets/images/smart-sakay-bg-2.png") center/cover no-repeat;
 }   
 
 .mockup-img img {
