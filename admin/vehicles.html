@@ -20,28 +20,41 @@
 
      <!-- Main content starts here -->
     <main class="main-content">
-        <div class="page-header mb-4 d-flex justify-content-between align-items-center">
+            <div class="page-header mb-4 d-flex justify-content-between align-items-center">
             <div>
                 <h1 class="page-title">Vehicle Management</h1>
                 <p class="page-subtitle">Registered transport vehicles</p>
             </div>
-            <button class="btn btn-primary-action" onclick="openRouteModal()">
-                <i class="bi bi-plus-lg"></i> Add Vehicle
-            </button>
+            <div class="d-flex align-items-center gap-2">
+                <div class="input-group" style="min-width:280px">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input class="form-control" type="search" id="vehicleSearchInput" placeholder="Search plate no. or ID">
+                </div>
+
+                <select id="filterVehicleStatus" class="form-select" style="width:150px">
+                    <option value="">All Status</option>
+                </select>
+
+                <select id="filterVehicleType" class="form-select" style="width:150px">
+                    <option value="">All Type</option>
+                </select>
+            </div>
         </div>
 
         <div class="table-card">
             <table class="table table-stripped smart-table">
                 <thead>
-                    <tr>
+                    <tr class="text-center">
                         <th>#</th>
                         <th>PLATE NO.</th>
                         <th>TYPE</th>
+                        <th>CAPACITY</th>
+                        <th>COLOR MARKINGS</th>
                         <th>STATUS</th>
-                        <th>ACTION</th>
+                        <th>CREATED AT</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="vehiclesTableBody">
                     <!-- Table contents will be here -->
                 </tbody>
             </table>

@@ -25,9 +25,23 @@
                 <h1 class="page-title">Driver Management</h1>
                 <p class="page-subtitle">Registered drivers in the system</p>
             </div>
-            <button class="btn btn-primary-action" id="btnAddDriver">
-                <i class="bi bi-plus-lg"></i> Add Driver
-            </button>
+            <div class="d-flex align-items-center gap-2">
+                <button class="btn btn-primary-action w-50" id="btnAddDriver">
+                    <i class="bi bi-plus-lg"></i> Add Driver
+                </button>
+
+                <div class="input-group" style="min-width:230px">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="search" id="driverSearchInput" class="form-control" placeholder="Search name or id">
+                </div>
+
+                <select id="filterDriverStatus" class="form-select" style="width:140px">
+                    <option value="">All Status</option>
+                    <option>Active</option>
+                    <option>Inactive</option>
+                    <option>On Leave</option>
+                </select>
+            </div>
         </div>
 
         <div class="table-card">

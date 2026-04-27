@@ -342,6 +342,7 @@ function loadDrivers() {
         dataType: "json",
         success: function (data) {
             driversData = data;
+            populateDriverStatusFilter();
             renderDrivers(data);
         },
         error: function (err) {
@@ -389,12 +390,152 @@ function renderDrivers(data) {
     $('#driversTableBody').html(rows);
 }
 
+function populateDriverStatusFilter() {
+    const select = $('#filterDriverStatus');
+    if (!select.length) return;
+    // Clear custom options except the first "All Status"
+    select.find('option').not(':first').remove();
+    const unique = [...new Set(driversData.map(d => d.status))];
+    unique.forEach(s => {
+        if (s == null) return;
+        select.append(`<option value="${s}">${s}</option>`);
+    });
+}
+
+function applyDriverFilters() {
+    const q = ($('#driverSearchInput').val() || '').toString().trim().toLowerCase();
+    const status = ($('#filterDriverStatus').val() || '').toString();
+
+    const filtered = driversData.filter(d => {
+        const matchesStatus = !status || d.status === status;
+        const idStr = (d.id || '').toString().toLowerCase();
+        const nameStr = (d.name || '').toString().toLowerCase();
+        const matchesQuery = !q || idStr.includes(q) || nameStr.includes(q);
+        return matchesStatus && matchesQuery;
+    });
+
+    renderDrivers(filtered);
+}
+
 $(function () {
     loadDrivers();
+    // Driver filters
+    $('#driverSearchInput').on('input', applyDriverFilters);
+    $('#filterDriverStatus').on('change', applyDriverFilters);
 });
 
-// MODALS
+// ============================================================
+// VEHICLES-PAGE DATA
+// ============================================================
 
+let vehiclesData = [];
+
+function loadVehicles() {
+    $.ajax({
+        url: "../api/vehicles.php",
+        method: "GET",
+        dataType: "json",
+
+        success: function (data) {
+            vehiclesData = data;
+            populateVehicleFilters();
+            renderVehicles(data);
+        },
+
+        error: function (err) {
+            console.error("Failed to fetch vehicles:", err);
+        }
+    });
+}
+
+// Render vehicles as table
+
+function renderVehicles(data) {
+
+    if (data.length === 0) {
+        $('#vehiclesTableBody').html(`
+            <tr>
+                <td colspan="8" class="text-center text-muted py-4">
+                    No vehicles found.
+                </td>
+            </tr>
+        `);
+        return;
+    }
+
+    const rows = data.map((v, index) => {
+        return `
+            <tr class="text-center" data-id="${v.id}">
+                <td>${index + 1}</td>
+                <td class="fw-mono">${v.plate}</td>
+                <td>${v.type}</td>
+                <td>${v.capacity}</td>
+                <td>${v.color || '-'}</td>
+                <td>
+                    <span class="status-badge ${v.status.toLowerCase().replace(' ', '-')}">
+                        ${v.status}
+                    </span>
+                </td>
+                <td class="fw-mono">${v.created_at || '-'}</td>
+            </tr>
+        `;
+    }).join('');
+
+    $('#vehiclesTableBody').html(rows);
+}
+
+$(function () {
+    loadVehicles();
+    // Vehicle filters: search, status, type
+    $('#vehicleSearchInput').on('input', applyVehicleFilters);
+    $('#filterVehicleStatus, #filterVehicleType').on('change', applyVehicleFilters);
+});
+
+function populateVehicleFilters() {
+    const statusSel = $('#filterVehicleStatus');
+    const typeSel = $('#filterVehicleType');
+    if (!statusSel.length && !typeSel.length) return;
+
+    // Populate unique statuses (keep existing first option)
+    if (statusSel.length) {
+        const existing = statusSel.find('option').map((i,el) => $(el).text()).get();
+        const uniqueStatus = [...new Set(vehiclesData.map(v => v.status).filter(s => s))];
+        uniqueStatus.forEach(s => {
+            if (existing.includes(s)) return;
+            statusSel.append(`<option value="${s}">${s}</option>`);
+        });
+    }
+
+    // Populate unique types
+    if (typeSel.length) {
+        typeSel.find('option').not(':first').remove();
+        const uniqueTypes = [...new Set(vehiclesData.map(v => v.type).filter(t => t))];
+        uniqueTypes.forEach(t => {
+            typeSel.append(`<option value="${t}">${t}</option>`);
+        });
+    }
+}
+
+function applyVehicleFilters() {
+    const q = ($('#vehicleSearchInput').val() || '').toString().trim().toLowerCase();
+    const status = ($('#filterVehicleStatus').val() || '').toString();
+    const type = ($('#filterVehicleType').val() || '').toString();
+
+    const filtered = vehiclesData.filter(v => {
+        const matchesStatus = !status || (v.status === status);
+        const matchesType = !type || (v.type === type);
+        const idStr = (v.id || '').toString().toLowerCase();
+        const plateStr = (v.plate || '').toString().toLowerCase();
+        const matchesQuery = !q || idStr.includes(q) || plateStr.includes(q);
+        return matchesStatus && matchesType && matchesQuery;
+    });
+
+    renderVehicles(filtered);
+}
+
+// DRIVER MODAL CREATE - SAVE - DELETE (CRUD)
+
+// ADD DRIVER
 $('#btnAddDriver').on('click', function () {
 
     $('#driverEditId').val('');
@@ -408,6 +549,7 @@ $('#btnAddDriver').on('click', function () {
     $('#driverModal').modal('show');
 });
 
+// EDIT DRIVER
 $(document).on('click', '.btn-tbl-edit', function () {
 
     const row = $(this).closest('tr');
@@ -516,6 +658,7 @@ function confirmDelete(type, id, label) {
     new bootstrap.Modal(document.getElementById('deleteModal')).show();
 }
 
+// DELETE BTN
 $(document).on('click', '.btn-tbl-delete', function () {
     const row = $(this).closest('tr');
 
