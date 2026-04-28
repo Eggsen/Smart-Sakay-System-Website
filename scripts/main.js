@@ -117,8 +117,8 @@ function loadTopbar() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  loadSidebar();
-  loadTopbar();
+    loadSidebar();
+    loadTopbar();
 });
 
 // ─── DATA ────────────────────────────────────────────────────────────────
@@ -317,17 +317,8 @@ function showDetail(tripId) {
 
 // ─── INIT ────────────────────────────────────────────────────────────────
 
-$(function() {
-    loadTrips(); // instead of renderTable(tripsData)
-
-    $('#filterStatus, #filterRoute').on('change', applyFilters);
-
-    $(document).on('click', '.btn-view-trip', function() {
-        showDetail($(this).data('id'));
-    });
-
-    $('#btnBack').on('click', showList);
-});
+// Note: initialize page-specific behavior below in a single block to avoid
+// duplicate global handlers that run on other pages.
 
 // ============================================================
 // DRIVERS-PAGE DATA
@@ -417,12 +408,7 @@ function applyDriverFilters() {
     renderDrivers(filtered);
 }
 
-$(function () {
-    loadDrivers();
-    // Driver filters
-    $('#driverSearchInput').on('input', applyDriverFilters);
-    $('#filterDriverStatus').on('change', applyDriverFilters);
-});
+// drivers initialization moved to unified init block
 
 // ============================================================
 // VEHICLES-PAGE DATA
@@ -484,12 +470,7 @@ function renderVehicles(data) {
     $('#vehiclesTableBody').html(rows);
 }
 
-$(function () {
-    loadVehicles();
-    // Vehicle filters: search, status, type
-    $('#vehicleSearchInput').on('input', applyVehicleFilters);
-    $('#filterVehicleStatus, #filterVehicleType').on('change', applyVehicleFilters);
-});
+// vehicles initialization moved to unified init block
 
 function populateVehicleFilters() {
     const statusSel = $('#filterVehicleStatus');
@@ -549,28 +530,7 @@ $('#btnAddDriver').on('click', function () {
     $('#driverModal').modal('show');
 });
 
-// EDIT DRIVER
-$(document).on('click', '.btn-tbl-edit', function () {
-
-    const row = $(this).closest('tr');
-    const id = row.data('id');
-
-    // Find driver from array
-    const driver = driversData.find(d => d.id == id);
-
-    if (!driver) return;
-
-    $('#driverEditId').val(driver.id);
-    $('#driverName').val(driver.name);
-    $('#driverLicense').val(driver.license);
-    $('#driverContact').val(driver.contact);
-    $('#driverStatus').val(driver.status);
-
-    $('#driverModalTitle').text('Edit Driver');
-
-    const modal = new bootstrap.Modal(document.getElementById('driverModal'));
-    modal.show();
-});
+// EDIT DRIVER handler delegated in unified init block below
 
 // SAVE DRIVER
 function saveDriver() {
@@ -658,12 +618,218 @@ function confirmDelete(type, id, label) {
     new bootstrap.Modal(document.getElementById('deleteModal')).show();
 }
 
-// DELETE BTN
-$(document).on('click', '.btn-tbl-delete', function () {
-    const row = $(this).closest('tr');
+// DELETE BTN delegated in unified init block below
 
-    const id = row.data('id');
-    const name = row.find('td:eq(1)').text(); // driver name column
+// ============================================================
+// ROUTES & STOPS-PAGE DATA
+// ============================================================
 
-    confirmDelete('driver', id, name);
+let routesData = [];
+
+function loadRoutes() {
+    $.ajax({
+        url: "../api/routes.php",
+        method: "GET",
+        dataType: "json",
+
+        success: function (data) {
+            routesData = data;
+            renderRoutes(data);
+        }
+    });
+}
+
+function openRouteModal() {
+
+    // Reset form
+    $('#routeModalTitle').text("Add Route");
+    $('#routeEditId').val('');
+    $('#routeName').val('');
+    $('#routeStops').val('');
+    $('#routeDistance').val('');
+
+    new bootstrap.Modal(document.getElementById('routeModal')).show();
+}
+
+function renderRoutes(data) {
+
+    if (data.length === 0) {
+        $('#routesContainer').html(`<p class="text-muted">No routes found.</p>`);
+        return;
+    }
+
+    const cards = data.map(route => {
+
+        // Generate stops list
+        const stopsHTML = route.stops.map((stopName, index) => {
+            return `
+                <li class="stop-item">
+                    <span class="stop-num">${index + 1}</span>
+                    ${stopName}
+                </li>
+            `;
+        }).join('');
+
+        return `
+        <div class="col-xl-4 col-md-6">
+            <div class="card route-card rounded-4">
+
+                <div class="card-header route-card-header d-flex justify-content-between align-items-center py-3 px-3 rounded-top-4">
+                    <span class="route-card-title">
+                        <i class="bi bi-signpost-2-fill me-2"></i>${route.name}
+                    </span>
+
+                    <div class="d-flex gap-1">
+                        <button class="btn-tbl btn-tbl-edit" data-id="${route.id}">
+                            <i class="bi bi-pencil-fill"></i>
+                        </button>
+                        <button class="btn-tbl btn-tbl-delete" data-id="${route.id}">
+                            <i class="bi bi-trash-fill"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card-body route-card-body d-flex flex-column">
+
+                    <div class="mb-3" style="font-size:0.77rem;color:var(--text-muted)">
+                        <i class="bi bi-rulers me-1"></i>${route.distance} km &nbsp;|&nbsp;
+                        <i class="bi bi-geo-alt-fill me-1"></i>${route.stops.length} stops
+                    </div>
+
+                    <ul class="stop-list">
+                        ${stopsHTML}
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+        `;
+    }).join('');
+
+    $('#routesContainer').html(cards);
+}
+
+// routes initialization moved to unified init block
+
+// ROUTES MODAL CREATE - SAVE - DELETE (CRUD)
+
+// Save route
+function saveRoute() {
+
+    const id = $('#routeEditId').val();
+    const name = $('#routeName').val();
+    const stops = $('#routeStops').val();
+    const distance = $('#routeDistance').val();
+
+    if (!name || !stops || !distance) {
+        alert("Please fill all fields");
+        return;
+    }
+
+    const url = id ? "../api/update-route.php" : "../api/add-route.php";
+
+    $.ajax({
+        url: url,
+        method: "POST",
+        data: {
+            id: id,
+            name: name,
+            stops: stops,
+            distance: distance
+        },
+
+        success: function (res) {
+
+            // Close modal
+            bootstrap.Modal.getInstance(document.getElementById('routeModal')).hide();
+
+            // Reload routes
+            loadRoutes();
+
+            console.log(res);
+        },
+
+        error: function (err) {
+            console.error(err);
+        }
+    });
+}
+
+// Edit/Delete route handlers delegated in unified init block below
+
+// Unified page init: only attach handlers and load data for the present page
+document.addEventListener('DOMContentLoaded', function () {
+    // Trips page
+    if ($('#tripsTableBody').length || $('#filterStatus').length) {
+        loadTrips();
+        $('#filterStatus, #filterRoute').on('change', applyFilters);
+        if ($('#tripsTableBody').length) {
+            $('#tripsTableBody').on('click', '.btn-view-trip', function () {
+                showDetail($(this).data('id'));
+            });
+        }
+        $('#btnBack').on('click', showList);
+    }
+
+    // Drivers page
+    if ($('#driversTableBody').length) {
+        loadDrivers();
+        $('#driverSearchInput').on('input', applyDriverFilters);
+        $('#filterDriverStatus').on('change', applyDriverFilters);
+
+        // edit driver (delegated)
+        $('#driversTableBody').on('click', '.btn-tbl-edit', function () {
+            const row = $(this).closest('tr');
+            const id = row.data('id');
+            const driver = driversData.find(d => d.id == id);
+            if (!driver) return;
+            $('#driverEditId').val(driver.id);
+            $('#driverName').val(driver.name);
+            $('#driverLicense').val(driver.license);
+            $('#driverContact').val(driver.contact);
+            $('#driverStatus').val(driver.status);
+            $('#driverModalTitle').text('Edit Driver');
+            const modal = new bootstrap.Modal(document.getElementById('driverModal'));
+            modal.show();
+        });
+
+        // delete driver (delegated)
+        $('#driversTableBody').on('click', '.btn-tbl-delete', function () {
+            const row = $(this).closest('tr');
+            const id = row.data('id');
+            const name = row.find('td:eq(1)').text();
+            confirmDelete('driver', id, name);
+        });
+    }
+
+    // Vehicles page
+    if ($('#vehiclesTableBody').length) {
+        loadVehicles();
+        $('#vehicleSearchInput').on('input', applyVehicleFilters);
+        $('#filterVehicleStatus, #filterVehicleType').on('change', applyVehicleFilters);
+    }
+
+    // Routes page
+    if ($('#routesContainer').length) {
+        loadRoutes();
+
+        // edit route (delegated)
+        $('#routesContainer').on('click', '.btn-tbl-edit', function () {
+            const id = $(this).data('id');
+            const route = routesData.find(r => r.id == id);
+            if (!route) return;
+            $('#routeModalTitle').text('Edit Route');
+            $('#routeEditId').val(route.id);
+            $('#routeName').val(route.name);
+            $('#routeDistance').val(route.distance);
+            $('#routeStops').val(route.stops.join(', '));
+            new bootstrap.Modal(document.getElementById('routeModal')).show();
+        });
+
+        // delete route (delegated)
+        $('#routesContainer').on('click', '.btn-tbl-delete', function () {
+            const id = $(this).data('id');
+            confirmDelete('route', id, 'Route');
+        });
+    }
 });

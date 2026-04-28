@@ -84,6 +84,11 @@ main {
   background: currentColor;
 }
 
+.card-header {
+    background-color: var(--secondary);
+    color: var(--white);
+}
+
 /* // ============================================================
 // SIDEBAR
 // ============================================================ */
@@ -740,12 +745,51 @@ main {
     font-weight: 800;
 }
 
+.btn-primary-action:hover {
+    background-color: var(--primary-dark);
+    color: var(--white);
+}
+
 /* Route cards */
 
-.card-header {
+.route-card-header {
     background-color: var(--secondary);
     border-radius: 1.5rem;
     color: var(--white);
+}
+
+.stop-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.stop-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 0;
+    font-size: 0.83rem;
+    color: var(--text-main);
+    border-bottom: 1px dashed var(--border);
+}
+
+.stop-item:last-child {
+    border: none;
+}
+
+.stop-num {
+    width: 22px;
+    height: 22px;
+    background: var(--primary);
+    color: #fff;
+    border-radius: 50%;
+    font-size: 0.65rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
 }
 
 /* // ============================================================
