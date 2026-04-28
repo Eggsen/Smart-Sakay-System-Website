@@ -618,6 +618,119 @@ function confirmDelete(type, id, label) {
     new bootstrap.Modal(document.getElementById('deleteModal')).show();
 }
 
+// ============================================================
+// PASSENGER LOGS
+// ============================================================
+
+let logsData = [];
+
+function loadLogs() {
+    $.ajax({
+        url: "../api/passenger-logs.php",
+        method: "GET",
+        dataType: "json",
+
+        success: function (data) {
+            logsData = data;
+            populateLogFilters();
+            renderLogs(data);
+        },
+
+        error: function (err) {
+            console.error("Failed to fetch logs:", err);
+        }
+    });
+}
+
+function renderLogs(data) {
+
+    if (data.length === 0) {
+        $('#logsTableBody').html(`
+            <tr>
+                <td colspan="7" class="text-center text-muted py-4">
+                    No logs found.
+                </td>
+            </tr>
+        `);
+        return;
+    }
+
+    const rows = data.map(l => {
+
+        const actionClass = l.action.toLowerCase(); // board/drop
+
+        return `
+        <tr class="text-center">
+            <td class="fw-mono" style="font-size:0.8rem">${l.time}</td>
+            <td class="fw-mono" style="color:var(--primary)">${l.trip}</td>
+            <td><span class="pax-tag">${l.type}</span></td>
+            <td><span class="action-tag">${l.action}</span></td>
+            <td class="fw-bold">${l.qty}</td>
+            <td>${l.stop}</td>
+            <td><span class="pay-tag">${l.payment}</span></td>
+        </tr>
+        `;
+    }).join('');
+
+    $('#logsTableBody').html(rows);
+}
+
+function populateLogFilters() {
+    if (!logsData || !logsData.length) return;
+
+    const actionSel = $('#filterAction');
+    const typeSel = $('#filterType');
+    const paySel = $('#filterPayment');
+
+    if (actionSel.length) {
+        const existing = actionSel.find('option').map((i, el) => $(el).val()).get();
+        const uniqueActions = [...new Set(logsData.map(l => l.action).filter(a => a))];
+        uniqueActions.forEach(a => {
+            if (existing.includes(a)) return;
+            actionSel.append(`<option value="${a}">${a}</option>`);
+        });
+    }
+
+    if (typeSel.length) {
+        const existing = typeSel.find('option').map((i, el) => $(el).val()).get();
+        const uniqueTypes = [...new Set(logsData.map(l => l.type).filter(t => t))];
+        uniqueTypes.forEach(t => {
+            if (existing.includes(t)) return;
+            typeSel.append(`<option value="${t}">${t}</option>`);
+        });
+    }
+
+    if (paySel.length) {
+        const existing = paySel.find('option').map((i, el) => $(el).val()).get();
+        const uniquePays = [...new Set(logsData.map(l => (l.payment || '').toString()).filter(p => p))];
+        uniquePays.forEach(p => {
+            if (existing.includes(p)) return;
+            paySel.append(`<option value="${p}">${p}</option>`);
+        });
+    }
+}
+
+function applyLogFilters() {
+    const action = ($('#filterAction').val() || '').toString();
+    const type = ($('#filterType').val() || '').toString();
+    const payment = ($('#filterPayment').val() || '').toString();
+
+    const result = logsData.filter(function(l) {
+        const matchAction = !action || (l.action === action);
+        const matchType = !type || (l.type === type);
+        const matchPayment = !payment || ((l.payment || '').toString() === payment);
+        return matchAction && matchType && matchPayment;
+    });
+
+    renderLogs(result);
+}
+
+$(function () {
+    loadLogs();
+    // wire up log filter change handlers
+    $(document).on('change', '#filterAction, #filterType, #filterPayment', applyLogFilters);
+});
+
 // DELETE BTN delegated in unified init block below
 
 // ============================================================

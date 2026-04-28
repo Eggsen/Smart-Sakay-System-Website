@@ -26,16 +26,21 @@
                 <p class="page-subtitle">All boarding and drop-off events</p>
             </div>
             <div class="right-header d-flex gap-3">
-                <select class="form-select form-select-sm filter-select" name="" id="">
+                <select id="filterAction" class="form-select form-select-sm">
                     <option value="">All Actions</option>
                     <option value="Board">Board</option>
                     <option value="Drop">Drop</option>
                 </select>
-                <select class="form-select filter-select" name="" id="">
+                <select id="filterType" class="form-select">
                     <option value="">All Types</option>
                     <option value="Student">Student</option>
                     <option value="Regular">Regular</option>
                     <option value="Senior">Senior Citizen</option>
+                </select>
+                <select id="filterPayment" class="form-select">
+                    <option value="">All Payments</option>
+                    <option value="Paid">Paid</option>
+                    <option value="Unpaid">Unpaid</option>
                 </select>
             </div>
         </div>
@@ -43,7 +48,7 @@
         <div class="table-card">
             <table class="table smart-table">
                 <thead>
-                    <tr>
+                    <tr class="text-center">
                         <th>TIME STAMP</th>
                         <th>TRIP ID</th>
                         <th>PASSENGER TYPE</th>
@@ -53,7 +58,7 @@
                         <th>PAYMENT</th>
                     </tr>
                 </thead>    
-                <tbody>
+                <tbody id="logsTableBody">
                     <!-- Table content here -->
                 </tbody>
             </table>

@@ -876,6 +876,43 @@ main {
     height: 38px;
 }
 
+/* Action tag Board/Drop */
+.action-tag {
+    padding: 3px 9px;
+    border-radius: 6px;
+    font-size: 0.73rem;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+}
+
+.action-tag.board {
+    background: rgba(255, 112, 67, 0.12);
+    color: var(--primary);
+}
+
+.action-tag.drop {
+    background: rgba(11, 72, 111, 0.10);
+    color: var(--secondary);
+}
+
+/* Payment status */
+.pay-tag {
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 0.72rem;
+    font-weight: 600;
+}
+
+.pay-tag.paid {
+    background: rgba(46, 204, 113, 0.12);
+    color: #27ae60;
+}
+
+.pay-tag.unpaid {
+    background: rgba(231, 76, 60, 0.10);
+    color: var(--danger);
+}
+
 /* // ============================================================
 // REPORTS PAGE
 // ============================================================ */
