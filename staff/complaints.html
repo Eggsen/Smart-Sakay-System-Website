@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="../styles/style.css">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"/>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+    <title>Complaints</title>
+</head>
+<body>
+
+    <div class="dashboard-shell">
+        <div id="sidebar-placeholder"></div>
+        <div id="topbar-placeholder"></div>
+
+        <main class="main-content">
+            <div class="page-header mb-4 d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="page-title">Complaints</h1>
+                    <p class="page-subtitle">Manage and track passenger complaints</p>
+                </div>
+                <div>
+                    <button class="btn btn-primary-action" id="btnAddComplaint" style="width: 144px;"><i class="bi bi-plus-lg me-2"></i>Add Complaint</button>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="card p-3 rounded-4 mb-4 border-0 shadow-sm">
+                <div class="row g-2 align-items-center">
+                    <div class="col-md-3">
+                        <input type="text" id="complaintSearch" class="form-control" placeholder="Search passenger or driver...">
+                    </div>
+                    <div class="col-md-2">
+                        <select id="filterStatus" class="form-select">
+                            <option value="">All Statuses</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Resolved">Resolved</option>
+                            <option value="Dismissed">Dismissed</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="table-responsive">
+                    <table class="table mb-0 align-middle custom-table">
+                        <thead>
+                            <tr class="text-center">
+                                <th>ID</th>
+                                <th>Date/Time</th>
+                                <th>Trip ID</th>
+                                <th>Driver</th>
+                                <th>Passenger</th>
+                                <th>Complaint</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="complaintsTableBody">
+                            <tr><td colspan="8" class="text-center py-4">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Add/Edit Complaint Modal -->
+    <div class="modal fade" id="complaintModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content smart-modal">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="complaintModalTitle">Add Complaint</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="complaintEditId">
+                    <div class="mb-3">
+                        <label class="form-label">Trip ID</label>
+                        <input type="text" id="compTripId" class="form-control" placeholder="e.g. T-001">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Driver ID</label>
+                        <input type="number" id="compDriverId" class="form-control" placeholder="Driver ID (optional)">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Passenger Name</label>
+                        <input type="text" id="compPassenger" class="form-control" placeholder="Name">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Complaint Text</label>
+                        <textarea id="compText" class="form-control" rows="3" placeholder="Describe the complaint"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        <select id="compStatus" class="form-select">
+                            <option value="Pending">Pending</option>
+                            <option value="Resolved">Resolved</option>
+                            <option value="Dismissed">Dismissed</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary-action" onclick="saveComplaint()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Update Modal -->
+    <div class="modal fade" id="statusModal" tabindex="-1">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow">
+                <div class="modal-header border-bottom-0 pb-0">
+                    <h5 class="modal-title fw-bold">Update Status</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="statusEditId">
+                    <div class="mb-3">
+                        <select id="quickStatus" class="form-select">
+                            <option value="Pending">Pending</option>
+                            <option value="Resolved">Resolved</option>
+                            <option value="Dismissed">Dismissed</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer border-top-0 pt-0">
+                    <button type="button" class="btn btn-primary-action w-100" onclick="updateStatus()">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../scripts/auth.js"></script>
+    <script>
+        checkAuth('staff');
+    </script>
+    <script src="../scripts/main.js"></script>
+    <script>
+        let complaintsData = [];
+
+        function loadComplaints() {
+            $.ajax({
+                url: '../api/complaints.php',
+                method: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    complaintsData = data;
+                    renderComplaints(data);
+                },
+                error: function(err) {
+                    console.error("Failed to fetch complaints:", err);
+                }
+            });
+        }
+
+        function renderComplaints(data) {
+            if (data.length === 0) {
+                $('#complaintsTableBody').html('<tr><td colspan="8" class="text-center text-muted py-4">No complaints found.</td></tr>');
+                return;
+            }
+
+            const rows = data.map(c => {
+                let statusBadge = 'status-badge ';
+                if (c.status === 'Resolved') statusBadge += 'active';
+                else if (c.status === 'Dismissed') statusBadge += 'inactive';
+                else statusBadge += 'on-leave'; // Using yellow/orange for Pending
+
+                return `
+                    <tr class="text-center">
+                        <td class="fw-mono" style="font-family: 'DM Mono', monospace">${c.id}</td>
+                        <td class="fw-mono" style="font-size: 0.85rem; font-family: 'DM Mono', monospace">${c.created_at}</td>
+                        <td style="font-family: 'DM Mono', monospace; color: var(--primary)">${c.trip || '-'}</td>
+                        <td>${c.driver || '-'}</td>
+                        <td>${c.passenger || '-'}</td>
+                        <td>${c.text}</td>
+                        <td><span class="${statusBadge} cursor-pointer" onclick="openStatusModal(${c.id}, '${c.status}')" title="Click to update status">${c.status}</span></td>
+                        <td>
+                            <button class="btn btn-tbl btn-tbl-edit" onclick="editComplaint(${c.id})"><i class="bi bi-pencil-fill"></i></button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+            $('#complaintsTableBody').html(rows);
+        }
+
+        function applyFilters() {
+            const q = $('#complaintSearch').val().toLowerCase();
+            const status = $('#filterStatus').val();
+
+            const filtered = complaintsData.filter(c => {
+                const matchStatus = !status || c.status === status;
+                const matchQ = !q || (c.passenger && c.passenger.toLowerCase().includes(q)) || (c.driver && c.driver.toLowerCase().includes(q)) || (c.text && c.text.toLowerCase().includes(q));
+                return matchStatus && matchQ;
+            });
+            renderComplaints(filtered);
+        }
+
+        $('#complaintSearch, #filterStatus').on('input change', applyFilters);
+
+        $('#btnAddComplaint').click(function() {
+            $('#complaintModalTitle').text('Add Complaint');
+            $('#complaintEditId').val('');
+            $('#compTripId').val('');
+            $('#compDriverId').val('');
+            $('#compPassenger').val('');
+            $('#compText').val('');
+            $('#compStatus').val('Pending');
+            new bootstrap.Modal(document.getElementById('complaintModal')).show();
+        });
+
+        function editComplaint(id) {
+            const c = complaintsData.find(x => x.id == id);
+            if (!c) return;
+            $('#complaintModalTitle').text('Edit Complaint');
+            $('#complaintEditId').val(c.id);
+            $('#compTripId').val(c.trip || '');
+            
+            // To properly show driver_id we would need it from the API, 
+            // since we joined, we only have driver name. But for edit it's fine.
+            $('#compDriverId').val(''); 
+            
+            $('#compPassenger').val(c.passenger || '');
+            $('#compText').val(c.text || '');
+            $('#compStatus').val(c.status || 'Pending');
+            new bootstrap.Modal(document.getElementById('complaintModal')).show();
+        }
+
+        function saveComplaint() {
+            const data = {
+                id: $('#complaintEditId').val(),
+                trip_id: $('#compTripId').val(),
+                driver_id: $('#compDriverId').val(),
+                passenger: $('#compPassenger').val(),
+                text: $('#compText').val(),
+                status: $('#compStatus').val()
+            };
+
+            if (!data.text) {
+                alert("Complaint text is required.");
+                return;
+            }
+
+            $.post('../api/save-complaint.php', data, function(res) {
+                alert(res);
+                bootstrap.Modal.getInstance(document.getElementById('complaintModal')).hide();
+                loadComplaints();
+            });
+        }
+
+        function openStatusModal(id, currentStatus) {
+            $('#statusEditId').val(id);
+            $('#quickStatus').val(currentStatus);
+            new bootstrap.Modal(document.getElementById('statusModal')).show();
+        }
+
+        function updateStatus() {
+            const data = {
+                id: $('#statusEditId').val(),
+                status: $('#quickStatus').val()
+            };
+            $.post('../api/update-complaint-status.php', data, function(res) {
+                bootstrap.Modal.getInstance(document.getElementById('statusModal')).hide();
+                loadComplaints();
+            });
+        }
+
+        $(function() {
+            loadComplaints();
+        });
+    </script>
+</body>
+</html>

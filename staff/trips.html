@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="../styles/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+    <title>Trips</title>
+
+    <style>
+        .view-section { display: none; animation: fadeInUp 0.25s ease; }
+        .view-section.active { display: block; }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-shell">
+        <div id="sidebar-placeholder"></div>
+        <div id="topbar-placeholder"></div>
+
+        <main class="main-content">
+
+            <!-- =============================================
+                 VIEW 1 — TRIP LIST
+            ============================================= -->
+            <div id="view-list" class="view-section active">
+
+                <div class="page-header mb-4 d-flex justify-content-between align-items-start flex-wrap gap-2">
+                    <div>
+                        <h1 class="page-title">Trip Monitoring</h1>
+                        <p class="page-subtitle">View active and completed trips</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <select class="form-select form-select-sm filter-select" id="filterStatus">
+                            <option value="">All Status</option>
+                            <option value="Active">Active</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                        <select class="form-select form-select-sm filter-select" id="filterRoute">
+                            <option value="">All Routes</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="table-card">
+                    <table class="table table-stripped smart-table text-center">
+                        <thead>
+                            <tr>
+                                <th>TRIP ID</th>
+                                <th>DRIVER</th>
+                                <th>VEHICLE</th>
+                                <th>ROUTE</th>
+                                <th>STATUS</th>
+                                <th>PASSENGERS</th>
+                                <th>FARE COLLECTED</th>
+                                <th>ACTION</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tripsTableBody"></tbody>
+                    </table>
+                </div>
+
+            </div><!-- /view-list -->
+
+
+            <!-- =============================================
+                 VIEW 2 — TRIP DETAIL
+            ============================================= -->
+            <div id="view-detail" class="view-section">
+
+                <div class="page-header mb-4 d-flex align-items-center gap-3">
+                    <button class="btn-back" id="btnBack">
+                        <i class="bi bi-arrow-left"></i> Back to Trips
+                    </button>
+                    <div>
+                        <h1 class="page-title" id="td-title">Trip Details</h1>
+                        <p class="page-subtitle" id="td-subtitle"></p>
+                    </div>
+                </div>
+
+                <div class="row g-4 mb-4">
+                    <div class="col-md-4">
+                        <div class="detail-card card">
+                            <div class="detail-card-header card-header">
+                                <i class="bi bi-person-badge-fill"></i> Driver Info
+                            </div>
+                            <div class="detail-card-body card-body d-flex flex-column" id="td-driver-info"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="detail-card card">
+                            <div class="detail-card-header card-header">
+                                <i class="bi bi-truck-front-fill"></i> Vehicle Info
+                            </div>
+                            <div class="detail-card-body card-body d-flex flex-column" id="td-vehicle-info"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="detail-card card">
+                            <div class="detail-card-header card-header">
+                                <i class="bi bi-cash-coin"></i> Fare Summary
+                            </div>
+                            <div class="detail-card-body card-body d-flex flex-column" id="td-fare-info"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row g-4">
+                    <div class="col-md-7">
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <div class="chart-title">Passenger Flow Timeline</div>
+                            </div>
+                            <div id="td-timeline"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <div class="chart-title">Passenger Breakdown</div>
+                            </div>
+                            <div id="td-breakdown"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- /view-detail -->
+
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../scripts/auth.js"></script>
+    <script>
+        checkAuth('staff');
+    </script>
+    <script src="../scripts/main.js"></script>
+    <script>
+        $(document).ready(function() {
+            // These event listeners exist in main.js but we must call loadTrips and setup filters
+            loadTrips();
+            
+            $('#filterStatus, #filterRoute').on('change', applyFilters);
+            $('#btnBack').on('click', showList);
+
+            // We must bind the view buttons dynamically because they are loaded via ajax
+            $(document).on('click', '.btn-view-trip', function() {
+                const id = $(this).data('id');
+                showDetail(id);
+            });
+        });
+    </script>
+
+</body>
+</html>

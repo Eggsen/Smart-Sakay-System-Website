@@ -1,0 +1,52 @@
+<aside>
+    <div class="sidebar-container d-flex flex-column">
+        <div class="sidebar-header d-flex">
+            <div class="logo">
+                <img src="../assets/logo/smartsakaylogo.png" alt="logo" class="img-fluid">
+            </div>
+            <div class="d-flex flex-column">
+                <span class="title">Smart Sakay</span>
+                <span class="sub">Staff Portal</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav d-flex flex-column">
+            <div class="nav-section-label">MAIN</div>
+            <a class="nav-item" href="../staff/dashboard.html" data-page="dashboard">
+                <i class="bi bi-grid-1x2-fill"></i><span>Dashboard</span>
+            </a>
+            <a class="nav-item" href="../staff/trips.html" data-page="trips">
+                <i class="bi bi-map-fill"></i><span>Trips</span>
+            </a>
+            <div class="nav-section-label">COMPLIANCE</div>
+            <a class="nav-item" href="../staff/complaints.html" data-page="complaints">
+                <i class="bi bi-exclamation-triangle-fill"></i><span>Complaints</span>
+            </a>
+            <a class="nav-item" href="../staff/violations.html" data-page="violations">
+                <i class="bi bi-shield-fill-x"></i><span>Violations</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="admin-chip">
+                <div class="admin-avatar">
+                    <img src="../assets/images/olygwapo.jpg" alt="" class="img-fluid rounded-5">
+                </div>
+                <div class="admin-name">
+                    <span id="sidebarUserName">Staff User</span>
+                    <span style="color: rgba(255,255,255,0.7); font-weight: normal;">LGU Staff</span>
+                </div>
+                <div class="logout-btn">
+                    <a href="#" class="btn-logout"><i class="bi bi-box-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</aside>
+<script>
+    // Update name
+    const stName = localStorage.getItem('userName');
+    if (stName) {
+        document.getElementById('sidebarUserName').textContent = stName;
+    }
+</script>

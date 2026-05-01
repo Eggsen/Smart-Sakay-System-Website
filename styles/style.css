@@ -975,24 +975,24 @@ main {
     box-shadow: 0 8px 40px rgba(0, 0, 0, 0.18);
 }
 
-.smart-modal .modal-header {
+.modal-header {
     background: var(--secondary);
     color: #fff;
     border: none;
     padding: 18px 22px;
 }
 
-.smart-modal .modal-title {
+.modal-title {
     font-weight: 700;
     font-size: 1rem;
 }
 
-.smart-modal .modal-body {
+.modal-body {
     padding: 22px;
     background: #fff;
 }
 
-.smart-modal .modal-footer {
+.modal-footer {
     background: var(--bg);
     border: none;
     padding: 14px 22px;
@@ -1108,6 +1108,7 @@ main {
 .btn-tbl-edit {
     background: rgba(255, 112, 67, 0.10);
     color: var(--primary);
+    border: none;
 }
 
 .btn-tbl-edit:hover {

@@ -1,36 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="../styles/style.css">
     <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap"
+        rel="stylesheet" />
     <title>Fare Policy</title>
     <style>
         /* Grouped fares UI */
-        .fare-group { margin-bottom: 1rem; border: 1px solid #e9ecef; border-radius: 8px; }
-        .fare-group-header { background:#f8f9fa; padding: .6rem .9rem; border-bottom:1px solid #e9ecef; display:flex; justify-content:space-between; align-items:center; }
-        .fare-item { padding: .6rem .9rem; display:flex; justify-content:space-between; align-items:center; border-top:1px solid #fff; }
-        .fare-item .fare-to { flex:1; }
-        .fare-item .fare-values { white-space:nowrap; margin-left: 1rem; }
-        .fare-actions button { margin-left: .5rem; }
-        .fare-empty { padding:1rem; color:#6c757d; }
+        .fare-group {
+            margin-bottom: 1rem;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+        }
+
+        .fare-group-header {
+            background: #f8f9fa;
+            padding: .6rem .9rem;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .fare-item {
+            padding: .6rem .9rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #fff;
+        }
+
+        .fare-item .fare-to {
+            flex: 1;
+        }
+
+        .fare-item .fare-values {
+            white-space: nowrap;
+            margin-left: 1rem;
+        }
+
+        .fare-actions button {
+            margin-left: .5rem;
+        }
+
+        .fare-empty {
+            padding: 1rem;
+            color: #6c757d;
+        }
     </style>
 </head>
+
 <body>
-    
+
     <!-- Sidebar loaded -->
     <div id="sidebar-placeholder"></div>
     <!-- Topbar loaded -->
     <div id="topbar-placeholder"></div>
-    
+
     <!-- Main content starts here -->
     <main class="main-content">
-    
+
         <!-- Page Header -->
         <div class="page-header d-flex align-items-center justify-content-between mb-4">
             <div>
@@ -38,16 +75,56 @@
                 <p class="page-subtitle">Base fare and discount configuration</p>
             </div>
             <div class="d-flex gap-2">
-                <button id="addFareBtn" class="btn btn-primary-action" data-bs-toggle="modal" data-bs-target="#fareModal">
-                    <i class="bi bi-plus-lg me-1"></i>Add Fare
-                </button>
                 <select id="routeFilter" class="form-select" style="width:140px">
                     <option value="">-- All Routes --</option>
                     <!-- Filled by fare.js → loadRoutes() -->
                 </select>
             </div>
         </div>
-    
+        <div class="card rounded-4 mb-4">
+            <div class="card-header rounded-top-4 py-3 px-4 d-flex justify-content-between align-items-center">
+                <div>
+                    <i class="bi bi-cash-coin me-2"></i>
+                    <strong>Current Fare Discounts (Passenger Type)</strong>
+                </div>
+            </div>
+            <div class="card-body p-4 d-flex flex-column">
+                <div class="row g-3 justify-content-center" id="farePolicyDisplay">
+                    <div class="col-md-4">
+                        <div class="fare-type-card student h-100 p-4 border rounded-3 text-center">
+                            <div class="fare-type-icon fs-1 mb-2">🎓</div>
+                            <div class="fare-type-label fw-bold text-muted text-uppercase small mb-1">Student</div>
+                            <div class="fare-type-value fs-2 fw-bold text-primary">%</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="fare-type-card regular h-100 p-4 border rounded-3 text-center">
+                            <div class="fare-type-icon fs-1 mb-2">🧑</div>
+                            <div class="fare-type-label fw-bold text-muted text-uppercase small mb-1">Regular</div>
+                            <div class="fare-type-value fs-2 fw-bold text-success">%</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="fare-type-card senior h-100 p-4 border rounded-3 text-center">
+                            <div class="fare-type-icon fs-1 mb-2">🧓</div>
+                            <div class="fare-type-label fw-bold text-muted text-uppercase small mb-1">Senior Citizen</div>
+                            <div class="fare-type-value fs-2 fw-bold text-warning">%</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-4">
+                    <button class="btn btn-primary-action px-4 py-2" style="width: 220px;" onclick="openFareModal()">
+                        <i class="bi bi-pencil-fill me-2"></i> Edit Fare Policy
+                    </button>
+                </div>
+            </div>
+            <div class="card-footer bg-light border-0 rounded-bottom-4 py-3 px-4 text-muted small">
+                <i class="bi bi-info-circle-fill me-2 text-primary"></i>
+                Fare rates apply to all registered routes. Senior Citizens and Students are given discounted rates per
+                LTFRB guidelines.
+            </div>
+        </div>
+
         <!-- Fare Matrix Card (dynamic) -->
         <div class="card rounded-4 mb-4">
             <div class="card-header rounded-top-4 py-3 px-4 d-flex justify-content-between align-items-center">
@@ -63,10 +140,76 @@
                 </div>
             </div>
         </div>
-    
+
+        <!-- Edit Fare Modal -->
+        <div class="modal fade" id="fareEditModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content smart-modal">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="fareModalTitle">Edit Stop & Fare</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="editStopId"/>
+                        <input type="hidden" id="editRouteId"/>
+                        <div class="mb-3">
+                            <label class="form-label">Stop Name</label>
+                            <input type="text" class="form-control smart-input" id="editStopName"/>
+                        </div>
+                        <div id="fareInputsContainer">
+                            <div class="mb-3">
+                                <label class="form-label">Regular Fare (₱)</label>
+                                <input type="number" step="0.01" class="form-control smart-input" id="editRegularFare"/>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Student Fare (₱)</label>
+                                <input type="number" step="0.01" class="form-control smart-input" id="editStudentFare"/>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Senior Fare (₱)</label>
+                                <input type="number" step="0.01" class="form-control smart-input" id="editSeniorFare"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn-cancel" data-bs-dismiss="modal">Cancel</button>
+                        <button class="btn-save" onclick="saveFarePolicy()">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Global Discount Modal -->
+        <div class="modal fade" id="globalDiscountModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content smart-modal">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="globalDiscountModalTitle">Edit Discount Policy</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Student Discount (%)</label>
+                            <input type="number" min="0" max="100" class="form-control smart-input" id="editStudentDiscount"/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Senior Citizen Discount (%)</label>
+                            <input type="number" min="0" max="100" class="form-control smart-input" id="editSeniorDiscount"/>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn-cancel" data-bs-dismiss="modal">Cancel</button>
+                        <button class="btn-save" onclick="saveGlobalDiscount()">Apply Discounts</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </main>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../scripts/main.js"></script>
+    <script src="../scripts/fare.js"></script>
 </body>
+
 </html>

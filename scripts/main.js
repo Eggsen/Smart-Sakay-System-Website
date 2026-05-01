@@ -117,6 +117,18 @@ function loadTopbar() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Auth Protection
+    const path = window.location.pathname.toLowerCase();
+    const role = localStorage.getItem('userRole');
+
+    if (path.includes('/admin/') && role !== 'admin') {
+        window.location.href = '../auth-pages/auth-admin/login.html';
+        return;
+    } else if (path.includes('/staff/') && role !== 'staff') {
+        window.location.href = '../auth-pages/auth-staff/login.html';
+        return;
+    }
+
     loadSidebar();
     loadTopbar();
 });
