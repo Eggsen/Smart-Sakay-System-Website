@@ -98,7 +98,7 @@ function renderFareCards(data) {
             <div class="card route-card rounded-4 h-100 shadow-sm border-0">
                 <div class="card-header route-card-header d-flex justify-content-between align-items-center py-3 px-3 rounded-top-4">
                     <span class="route-card-title fw-bold">
-                        <i class="bi bi-signpost-2-fill me-2 text-primary"></i>${route.name}
+                        <i class="bi bi-signpost-2-fill me-2"></i>${route.name}
                     </span>
                 </div>
                 <div class="card-body route-card-body d-flex flex-column p-4">

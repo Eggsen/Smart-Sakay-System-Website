@@ -25,13 +25,13 @@
             <p class="page-subtitle">Transportation summary and analytics</p>
         </div>
 
-        <!-- Card -->
+        <!-- Summary cards -->
         <div class="row g-3 mb-4">
             <div class="col-xl-4 col-sm-6">
                 <div class="card report-card">
                     <div class="card-body report-body">
                         <div class="report-icon"><i class="bi bi-people-fill"></i></div>
-                        <span class="report-value">0</span>
+                        <span class="report-value" id="rpt-passengers">—</span>
                         <span class="report-subtitle">Total Passengers</span>
                     </div>
                 </div>
@@ -40,7 +40,7 @@
                 <div class="card report-card">
                     <div class="card-body report-body">
                         <div class="report-icon"><i class="bi bi-cash-stack"></i></div>
-                        <span class="report-value">&#8369; 0</span>
+                        <span class="report-value" id="rpt-revenue">—</span>
                         <span class="report-subtitle">Total Revenue</span>
                     </div>
                 </div>
@@ -49,27 +49,34 @@
                 <div class="card report-card">
                     <div class="card-body report-body">
                         <div class="report-icon"><i class="bi bi-map-fill"></i></div>
-                        <span class="report-value">0</span>
+                        <span class="report-value" id="rpt-trips">—</span>
                         <span class="report-subtitle">Total Trips</span>
                     </div>
                 </div>
             </div>
         </div>
-        <!--  -->
+
+        <!-- Charts -->
         <div class="row g-4">
             <div class="col-xl-7">
                 <div class="chart-card">
-                <div class="chart-header">
-                    <div class="chart-title">Revenue by Route</div>
-                </div>
+                    <div class="chart-header">
+                        <div>
+                            <div class="chart-title">Revenue by Route</div>
+                            <div class="chart-sub">Total fare collected per route</div>
+                        </div>
+                    </div>
                     <canvas id="revenueChart" height="120"></canvas>
                 </div>
             </div>
             <div class="col-xl-5">
                 <div class="chart-card">
-                <div class="chart-header">
-                    <div class="chart-title">Trips per Route</div>
-                </div>
+                    <div class="chart-header">
+                        <div>
+                            <div class="chart-title">Trips per Route</div>
+                            <div class="chart-sub">Distribution of trips across routes</div>
+                        </div>
+                    </div>
                     <canvas id="tripsRouteChart" height="160"></canvas>
                 </div>
             </div>
@@ -78,6 +85,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
     <script src="../scripts/main.js"></script>
+    <script src="../scripts/reports.js"></script>
 </body>
 </html>
