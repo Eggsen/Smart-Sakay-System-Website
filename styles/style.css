@@ -752,6 +752,10 @@ main {
 
 /* Route cards */
 
+.route-card {
+    box-shadow: var(--shadow);
+}
+
 .route-card-header {
     background-color: var(--secondary);
     border-radius: 1.5rem;
@@ -828,6 +832,11 @@ main {
     margin: 10px 0px;
 }
 
+.passenger-icon img{
+    width: 48px;
+    height: 48px;
+}
+
 .fare-card-student { border: 0.5px solid var(--secondary); }
 .fare-card-regular { border: 0.5px solid var(--primary); }
 .fare-card-senior { border: 0.5px solid var(--success); }
@@ -865,6 +874,10 @@ main {
 
 .card-footer span {
     font-size: 0.90rem;
+}
+
+.fare-font {
+    font-family: var(--secondary-font);
 }
 
 /* // ============================================================
