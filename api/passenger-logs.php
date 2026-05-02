@@ -1,9 +1,8 @@
 <?php
-$conn = new mysqli("localhost", "root", "", "smart_sakay_db");
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+require_once __DIR__ . '/db.php';
+ini_set('display_errors', 0);
+error_reporting(0);
+header('Content-Type: application/json');
 
 $sql = "
 SELECT 
@@ -38,3 +37,4 @@ while ($row = $result->fetch_assoc()) {
 
 header('Content-Type: application/json');
 echo json_encode($logs);
+exit;

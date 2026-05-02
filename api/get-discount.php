@@ -1,9 +1,8 @@
 <?php
-$conn = mysqli_connect("localhost", "root", "", "smart_sakay_db");
-
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
-}
+require_once __DIR__ . '/db.php';
+ini_set('display_errors', 0);
+error_reporting(0);
+header('Content-Type: application/json');
 
 // Fetch the first fare to determine current discount percentages
 $query = "SELECT regular_fare, student_fare, senior_fare FROM route_fare WHERE regular_fare > 0 LIMIT 1";
@@ -31,4 +30,5 @@ if ($row = mysqli_fetch_assoc($result)) {
 }
 
 mysqli_close($conn);
+exit;
 ?>

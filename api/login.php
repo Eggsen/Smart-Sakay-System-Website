@@ -1,5 +1,7 @@
 <?php
 require_once 'db.php';
+ini_set('display_errors', 0);
+error_reporting(0);
 header('Content-Type: application/json');
 
 $identifier = isset($_POST['username']) ? trim($_POST['username']) : '';
@@ -56,13 +58,18 @@ if ($result->num_rows === 1) {
                 'full_name' => $user['full_name']
             ]
         ]);
+        $stmt->close();
+        $conn->close();
+        exit;
     } else {
         echo json_encode(['success' => false, 'message' => 'Invalid credentials. Please check your username/email and password.']);
+        $stmt->close();
+        $conn->close();
+        exit;
     }
 } else {
     echo json_encode(['success' => false, 'message' => 'No account found with that username or email.']);
+    $stmt->close();
+    $conn->close();
+    exit;
 }
-
-$stmt->close();
-$conn->close();
-?>

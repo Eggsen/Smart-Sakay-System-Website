@@ -1,9 +1,7 @@
 <?php
-$conn = new mysqli("localhost", "root", "", "smart_sakay_db");
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+ini_set('display_errors', 0);
+error_reporting(0);
+require_once __DIR__ . '/db.php';
 
 $id      = $_POST['id'];
 $name    = $_POST['name'];
@@ -13,7 +11,7 @@ $status  = $_POST['status'];
 
 if ($id == "") {
     // INSERT
-    $sql = "INSERT INTO DRIVER (full_name, license_number, contact_number, status)
+    $sql = "INSERT INTO driver (full_name, license_number, contact_number, status)
             VALUES ('$name', '$license', '$contact', '$status')";
 
     if ($conn->query($sql)) {
@@ -24,7 +22,7 @@ if ($id == "") {
 
 } else {
     // UPDATE
-    $sql = "UPDATE DRIVER SET
+    $sql = "UPDATE driver SET
             full_name='$name',
             license_number='$license',
             contact_number='$contact',

@@ -1,13 +1,11 @@
 <?php
-$conn = new mysqli("localhost", "root", "", "smart_sakay_db");
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+ini_set('display_errors', 0);
+error_reporting(0);
+require_once __DIR__ . '/db.php';
 
 $id = $_POST['id'];
 
-$sql = "DELETE FROM DRIVER WHERE driver_id=$id";
+$sql = "DELETE FROM driver WHERE driver_id=$id";
 
 if ($conn->query($sql)) {
     echo "Driver deleted successfully";

@@ -1,44 +1,39 @@
 <?php
-$conn = new mysqli("localhost", "root", "", "smart_sakay_db");
-
-if ($conn->connect_error) {
-    die("Connection failed:" . $conn->connect_error);
-}
+ini_set('display_errors', 0);
+error_reporting(0);
+header('Content-Type: application/json');
+require_once __DIR__ . '/db.php';
 
 $routes = [];
 
-// 1. Get all routes
-$routeQuery = "SELECT * FROM route ORDER BY route_id ASC";
-$routeResult = $conn->query($routeQuery);
+$routeResult = $conn->query("SELECT * FROM route ORDER BY route_id ASC");
 
-while ($route = $routeResult->fetch_assoc()) {
+if ($routeResult) {
+    while ($route = $routeResult->fetch_assoc()) {
 
-    $route_id = $route['route_id'];
+        $route_id = $route['route_id'];
 
-    // 2. Get stops for this route
-    $stopQuery = "
-        SELECT stop_name
-        FROM STOP
-        WHERE route_id = $route_id
-        ORDER BY stop_order ASC
-    ";
+        $stopResult = $conn->query("
+            SELECT stop_name FROM stop
+            WHERE route_id = $route_id
+            ORDER BY stop_order ASC
+        ");
 
-    $stopResult = $conn->query($stopQuery);
+        $stops = [];
+        if ($stopResult) {
+            while ($stop = $stopResult->fetch_assoc()) {
+                $stops[] = $stop['stop_name'];
+            }
+        }
 
-    $stops = [];
-
-    while ($stop = $stopResult->fetch_assoc()) {
-        $stops[] = $stop['stop_name'];
+        $routes[] = [
+            'id'       => $route_id,
+            'name'     => $route['route_name'],
+            'distance' => $route['distance_km'],
+            'stops'    => $stops,
+        ];
     }
-
-    // 3. Combine route + stops
-    $routes[] = [
-        "id" => $route_id,
-        "name" => $route['route_name'],
-        "distance" => $route['distance_km'],
-        "stops" => $stops
-    ];
 }
 
-header('Content-Type: application/json');
-echo json_encode($routes);
+echo json_encode($routes, JSON_INVALID_UTF8_SUBSTITUTE);
+exit;

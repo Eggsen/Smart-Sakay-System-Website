@@ -1,72 +1,71 @@
 <?php
-    header("Content-Type: application/json");
-    include "db.php";
+ini_set('display_errors', 0);
+error_reporting(0);
+header('Content-Type: application/json');
+require_once __DIR__ . '/db.php';
 
-    $response = [];
+// Safe single-value query helper
+function qVal($conn, $sql, $col, $default = 0) {
+    $r = $conn->query($sql);
+    if (!$r) return $default;
+    $row = $r->fetch_assoc();
+    return $row[$col] ?? $default;
+}
 
-    // ─── 1. TOTAL TRIPS TODAY ─────────────────────────────────────────────────
-    $tripsToday = $conn->query("
-        SELECT COUNT(*) AS total
-        FROM trip
-        WHERE DATE(created_at) = CURDATE()
-    ")->fetch_assoc()['total'];
+// ─── 1. TOTAL TRIPS TODAY ─────────────────────────────────────────────────
+$tripsToday = (int)qVal($conn,
+    "SELECT COUNT(*) AS total FROM trip WHERE DATE(created_at) = CURDATE()",
+    'total');
 
-    // Fallback: if no trips today, count all trips (for demo data)
-    if ((int)$tripsToday === 0) {
-        $tripsToday = $conn->query("SELECT COUNT(*) AS total FROM trip")->fetch_assoc()['total'];
-    }
+// Fallback: count all trips when none today
+if ($tripsToday === 0) {
+    $tripsToday = (int)qVal($conn, "SELECT COUNT(*) AS total FROM trip", 'total');
+}
 
-    // ─── 2. TOTAL PASSENGERS ─────────────────────────────────────────────────
-    $totalPassengers = $conn->query("
-        SELECT COALESCE(SUM(quantity), 0) AS total
-        FROM passenger_log
-        WHERE action = 'Board'
-    ")->fetch_assoc()['total'];
+// ─── 2. TOTAL PASSENGERS ─────────────────────────────────────────────────
+$totalPassengers = (int)qVal($conn,
+    "SELECT COALESCE(SUM(quantity), 0) AS total FROM passenger_log WHERE action = 'Board'",
+    'total');
 
-    // ─── 3. TOTAL REVENUE ────────────────────────────────────────────────────
-    $totalRevenue = $conn->query("
-        SELECT COALESCE(SUM(total_fare), 0) AS total
-        FROM trip
-    ")->fetch_assoc()['total'];
+// ─── 3. TOTAL REVENUE ────────────────────────────────────────────────────
+$totalRevenue = (float)qVal($conn,
+    "SELECT COALESCE(SUM(total_fare), 0) AS total FROM trip",
+    'total');
 
-    // ─── 4. ACTIVE TRIPS ─────────────────────────────────────────────────────
-    $activeTrips = $conn->query("
-        SELECT COUNT(*) AS total
-        FROM trip
-        WHERE status = 'Active'
-    ")->fetch_assoc()['total'];
+// ─── 4. ACTIVE TRIPS ─────────────────────────────────────────────────────
+$activeTrips = (int)qVal($conn,
+    "SELECT COUNT(*) AS total FROM trip WHERE status = 'Active'",
+    'total');
 
-    // ─── 5. PASSENGER TYPE BREAKDOWN ────────────────────────────────────────
-    $breakdownResult = $conn->query("
-        SELECT passenger_type, COALESCE(SUM(quantity), 0) AS total
-        FROM passenger_log
-        WHERE action = 'Board'
-        GROUP BY passenger_type
-    ");
-
-    $breakdown = ['Student' => 0, 'Regular' => 0, 'Senior' => 0];
+// ─── 5. PASSENGER TYPE BREAKDOWN ─────────────────────────────────────────
+$breakdown = ['Student' => 0, 'Regular' => 0, 'Senior' => 0];
+$breakdownResult = $conn->query("
+    SELECT passenger_type, COALESCE(SUM(quantity), 0) AS total
+    FROM passenger_log
+    WHERE action = 'Board'
+    GROUP BY passenger_type
+");
+if ($breakdownResult) {
     while ($row = $breakdownResult->fetch_assoc()) {
-        $breakdown[$row['passenger_type']] = (int)$row['total'];
+        if (isset($breakdown[$row['passenger_type']])) {
+            $breakdown[$row['passenger_type']] = (int)$row['total'];
+        }
     }
+}
 
-    // ─── 6. HOURLY PASSENGER FLOW ────────────────────────────────────────────
-    // Group boarding and drop-off counts by hour (0–23)
-    $hourlyResult = $conn->query("
-        SELECT 
-            HOUR(logged_at) AS hour,
-            action,
-            COALESCE(SUM(quantity), 0) AS total
-        FROM passenger_log
-        GROUP BY HOUR(logged_at), action
-        ORDER BY hour ASC
-    ");
+// ─── 6. HOURLY PASSENGER FLOW ────────────────────────────────────────────
+$hourly = [];
+for ($h = 0; $h < 24; $h++) {
+    $hourly[$h] = ['board' => 0, 'drop' => 0];
+}
 
-    // Initialize all 24 hours
-    $hourly = [];
-    for ($h = 0; $h < 24; $h++) {
-        $hourly[$h] = ['board' => 0, 'drop' => 0];
-    }
-
+$hourlyResult = $conn->query("
+    SELECT HOUR(logged_at) AS hour, action, COALESCE(SUM(quantity), 0) AS total
+    FROM passenger_log
+    GROUP BY HOUR(logged_at), action
+    ORDER BY hour ASC
+");
+if ($hourlyResult) {
     while ($row = $hourlyResult->fetch_assoc()) {
         $h = (int)$row['hour'];
         if ($row['action'] === 'Board') {
@@ -75,49 +74,40 @@
             $hourly[$h]['drop'] = (int)$row['total'];
         }
     }
+}
 
-    // Only return hours that have data (trim leading/trailing empty hours)
-    $firstHour = 0;
-    $lastHour  = 23;
-    foreach ($hourly as $h => $v) {
-        if ($v['board'] > 0 || $v['drop'] > 0) {
-            $firstHour = $h;
-            break;
-        }
-    }
-    for ($h = 23; $h >= 0; $h--) {
-        if ($hourly[$h]['board'] > 0 || $hourly[$h]['drop'] > 0) {
-            $lastHour = $h;
-            break;
-        }
-    }
+// Trim empty leading/trailing hours
+$firstHour = 0;
+$lastHour  = 23;
+foreach ($hourly as $h => $v) {
+    if ($v['board'] > 0 || $v['drop'] > 0) { $firstHour = $h; break; }
+}
+for ($h = 23; $h >= 0; $h--) {
+    if ($hourly[$h]['board'] > 0 || $hourly[$h]['drop'] > 0) { $lastHour = $h; break; }
+}
 
-    $hourlyLabels = [];
-    $hourlyBoard  = [];
-    $hourlyDrop   = [];
+$hourlyLabels = [];
+$hourlyBoard  = [];
+$hourlyDrop   = [];
+for ($h = $firstHour; $h <= $lastHour; $h++) {
+    $hourlyLabels[] = sprintf('%02d:00', $h);
+    $hourlyBoard[]  = $hourly[$h]['board'];
+    $hourlyDrop[]   = $hourly[$h]['drop'];
+}
 
-    for ($h = $firstHour; $h <= $lastHour; $h++) {
-        $label = sprintf('%02d:00', $h);
-        $hourlyLabels[] = $label;
-        $hourlyBoard[]  = $hourly[$h]['board'];
-        $hourlyDrop[]   = $hourly[$h]['drop'];
-    }
-
-    // ─── RESPONSE ────────────────────────────────────────────────────────────
-    $response = [
-        'stats' => [
-            'tripsToday'      => (int)$tripsToday,
-            'totalPassengers' => (int)$totalPassengers,
-            'totalRevenue'    => (float)$totalRevenue,
-            'activeTrips'     => (int)$activeTrips,
-        ],
-        'breakdown' => $breakdown,
-        'hourly' => [
-            'labels' => $hourlyLabels,
-            'board'  => $hourlyBoard,
-            'drop'   => $hourlyDrop,
-        ]
-    ];
-
-    echo json_encode($response);
-?>
+// ─── RESPONSE ────────────────────────────────────────────────────────────
+echo json_encode([
+    'stats' => [
+        'tripsToday'      => $tripsToday,
+        'totalPassengers' => $totalPassengers,
+        'totalRevenue'    => $totalRevenue,
+        'activeTrips'     => $activeTrips,
+    ],
+    'breakdown' => $breakdown,
+    'hourly' => [
+        'labels' => $hourlyLabels,
+        'board'  => $hourlyBoard,
+        'drop'   => $hourlyDrop,
+    ],
+], JSON_INVALID_UTF8_SUBSTITUTE);
+exit;

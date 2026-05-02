@@ -1,5 +1,8 @@
 <?php
-$conn = new mysqli("localhost", "root", "", "smart_sakay_db");
+ini_set('display_errors', 0);
+error_reporting(0);
+require_once __DIR__ . '/db.php';
+
 
 $id = $_POST['id'];
 $name = $_POST['name'];
@@ -8,7 +11,7 @@ $stops = $_POST['stops'];
 
 // 1. Update route
 $stmt = $conn->prepare("
-    UPDATE ROUTE 
+    UPDATE route 
     SET route_name = ?, distance_km = ?
     WHERE route_id = ?
 ");
@@ -16,7 +19,7 @@ $stmt->bind_param("sdi", $name, $distance, $id);
 $stmt->execute();
 
 // 2. Delete old stops
-$conn->query("DELETE FROM STOP WHERE route_id = $id");
+$conn->query("DELETE FROM stop WHERE route_id = $id");
 
 // 3. Insert new stops
 $stopArray = explode(",", $stops);
@@ -28,7 +31,7 @@ foreach ($stopArray as $s) {
     if ($stopName === "") continue;
 
     $stmt2 = $conn->prepare("
-        INSERT INTO STOP (route_id, stop_name, stop_order)
+        INSERT INTO stop (route_id, stop_name, stop_order)
         VALUES (?, ?, ?)
     ");
 

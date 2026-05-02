@@ -1,16 +1,14 @@
 <?php
-$conn = new mysqli("localhost", "root", "", "smart_sakay_db");
-
-if ($conn->connect_error) {
-    die("Connection failed");
-}
+ini_set('display_errors', 0);
+error_reporting(0);
+require_once __DIR__ . '/db.php';
 
 $name = $_POST['name'];
 $distance = $_POST['distance'];
 $stops = $_POST['stops']; // comma-separated
 
 // 1. Insert route
-$sql = "INSERT INTO ROUTE (route_name, distance_km) VALUES (?, ?)";
+$sql = "INSERT INTO route (route_name, distance_km) VALUES (?, ?)";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("sd", $name, $distance);
 $stmt->execute();
@@ -27,7 +25,7 @@ foreach ($stopArray as $s) {
     if ($stopName === "") continue;
 
     $stmt2 = $conn->prepare("
-        INSERT INTO STOP (route_id, stop_name, stop_order)
+        INSERT INTO stop (route_id, stop_name, stop_order)
         VALUES (?, ?, ?)
     ");
 

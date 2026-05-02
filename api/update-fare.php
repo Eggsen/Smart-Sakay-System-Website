@@ -1,9 +1,7 @@
 <?php
-$conn = mysqli_connect("localhost", "root", "", "smart_sakay_db");
-
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
-}
+ini_set('display_errors', 0);
+error_reporting(0);
+require_once __DIR__ . '/db.php';
 
 $stop_id = $_POST['stop_id'] ?? '';
 $route_id = $_POST['route_id'] ?? '';

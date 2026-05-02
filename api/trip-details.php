@@ -1,6 +1,8 @@
 <?php
+ini_set('display_errors', 0);
+error_reporting(0);
     header("Content-Type: application/json");
-    include "db.php";
+require_once __DIR__ . '/db.php';
 
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
@@ -19,13 +21,14 @@
                 pl.quantity,
                 pl.passenger_type,
                 s.stop_name
-            FROM PASSENGER_LOG pl
-            JOIN STOP s ON pl.stop_id = s.stop_id
+            FROM passenger_log pl
+            JOIN stop s ON pl.stop_id = s.stop_id
             WHERE pl.trip_id = '$trip_id'
             ORDER BY pl.logged_at ASC
         ";
 
         $timelineResult = $conn->query($timelineQuery);
+        if (!$timelineResult) { echo json_encode(['timeline'=>[],'breakdown'=>[]]); exit; }
 
         $timeline = [];
 
@@ -44,7 +47,7 @@
             SELECT 
                 passenger_type,
                 SUM(quantity) as total
-            FROM PASSENGER_LOG
+            FROM passenger_log
             WHERE trip_id = '$trip_id' AND action = 'Board'
             GROUP BY passenger_type
         ";
@@ -62,8 +65,8 @@
         }
 
         echo json_encode([
-            "timeline" => $timeline,
+            "timeline"  => $timeline,
             "breakdown" => $breakdown
         ]);
+        exit;
     }
-?>

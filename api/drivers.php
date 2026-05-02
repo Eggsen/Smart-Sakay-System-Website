@@ -1,24 +1,23 @@
 <?php
-$conn = new mysqli("localhost", "root", "", "smart_sakay_db");
+ini_set('display_errors', 0);
+error_reporting(0);
+header('Content-Type: application/json');
+require_once __DIR__ . '/db.php';
 
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-$sql = "SELECT * FROM DRIVER ORDER BY driver_id ASC";
-$result = $conn->query($sql);
+$result = $conn->query("SELECT * FROM driver ORDER BY driver_id ASC");
 
 $drivers = [];
-
-while ($row = $result->fetch_assoc()) {
-    $drivers[] = [
-        "id" => $row["driver_id"],
-        "name" => $row["full_name"],
-        "license" => $row["license_number"],
-        "contact" => $row["contact_number"],
-        "status" => $row["status"]
-    ];
+if ($result) {
+    while ($row = $result->fetch_assoc()) {
+        $drivers[] = [
+            'id'      => $row['driver_id'],
+            'name'    => $row['full_name'],
+            'license' => $row['license_number'],
+            'contact' => $row['contact_number'],
+            'status'  => $row['status'],
+        ];
+    }
 }
 
-header('Content-Type: application/json');
 echo json_encode($drivers);
+exit;

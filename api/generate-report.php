@@ -8,16 +8,7 @@
 require_once __DIR__ . '/../lib/fpdf/fpdf.php';
 
 // ─── DATABASE CONNECTION ─────────────────────────────────────
-$host = "localhost";
-$user = "root";
-$pass = "";
-$db   = "smart_sakay_db";
-
-$conn = mysqli_connect($host, $user, $pass, $db);
-
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
-}
+require_once __DIR__ . '/db.php';
 
 // ─── 1. SUMMARY DATA ─────────────────────────────────────────
 

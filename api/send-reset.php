@@ -1,11 +1,13 @@
 <?php
-require_once 'db.php';
+ini_set('display_errors', 0);
+error_reporting(0);
+require_once 'db.php'; // also loads config.php
 header('Content-Type: application/json');
 
-// ── PHPMailer (no Composer) ──────────────────────────────────────────
-require_once 'C:/xampp/htdocs/TanNery/phpmailer/src/Exception.php';
-require_once 'C:/xampp/htdocs/TanNery/phpmailer/src/PHPMailer.php';
-require_once 'C:/xampp/htdocs/TanNery/phpmailer/src/SMTP.php';
+// ── PHPMailer (bundled inside project under lib/phpmailer/) ─────────
+require_once __DIR__ . '/../lib/phpmailer/src/Exception.php';
+require_once __DIR__ . '/../lib/phpmailer/src/PHPMailer.php';
+require_once __DIR__ . '/../lib/phpmailer/src/SMTP.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -85,7 +87,7 @@ $stmt->close();
 $conn->close();
 
 // ── Build the reset URL ──────────────────────────────────────────────
-$base_url  = 'http://localhost/SmartSakay/auth-pages/auth-admin';
+$base_url  = APP_BASE_URL . '/auth-pages/auth-admin';
 $reset_url = $base_url . '/reset-password.php?token=' . urlencode($token);
 
 // ── Send email via PHPMailer ─────────────────────────────────────────
@@ -94,27 +96,27 @@ $mail = new PHPMailer(true);
 try {
     // ── SMTP Configuration ──────────────────────────────────────────
     $mail->isSMTP();
-    $mail->Host       = 'smtp.gmail.com';
+    $mail->Host       = SMTP_HOST;
     $mail->SMTPAuth   = true;
-    $mail->Username   = 'tanneryoly07@gmail.com';
-    $mail->Password   = str_replace(' ', '', 'rnov wizh ussr guxs');
+    $mail->Username   = SMTP_USER;
+    $mail->Password   = SMTP_PASS;
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-    $mail->Port       = 587;
+    $mail->Port       = SMTP_PORT;
 
-    // ── Fix for XAMPP SSL certificate verify failed ──────────────────
-    // XAMPP's OpenSSL cannot verify Gmail's cert (missing/outdated CA bundle).
-    // This is safe for local development; remove SMTPOptions on a live server
-    // that has a proper CA bundle (it will verify automatically).
-    $mail->SMTPOptions = [
-        'ssl' => [
-            'verify_peer'       => false,
-            'verify_peer_name'  => false,
-            'allow_self_signed' => true,
-        ]
-    ];
+    // ── SSL: disable peer verification on local XAMPP only ───────────
+    // On a live server the CA bundle is valid, so SSL verifies normally.
+    if (APP_ENV === 'local') {
+        $mail->SMTPOptions = [
+            'ssl' => [
+                'verify_peer'       => false,
+                'verify_peer_name'  => false,
+                'allow_self_signed' => true,
+            ]
+        ];
+    }
 
     // ── Email content ───────────────────────────────────────────────
-    $mail->setFrom('tanneryoly07@gmail.com', 'Smart Sakay');
+    $mail->setFrom(MAIL_FROM_ADDRESS, MAIL_FROM_NAME);
     $mail->addAddress($email, $found_name);
     $mail->isHTML(true);
     $mail->Subject = 'Smart Sakay – Password Reset Request';

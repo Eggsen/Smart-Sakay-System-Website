@@ -1,5 +1,7 @@
 <?php
 require_once 'db.php';
+ini_set('display_errors', 0);
+error_reporting(0);
 header('Content-Type: application/json');
 
 $role_type   = isset($_POST['role_type'])   ? trim($_POST['role_type'])   : 'Admin';
@@ -89,9 +91,10 @@ try {
         echo json_encode(['success' => false, 'message' => 'Registration failed: ' . $stmt->error]);
     }
     $stmt->close();
+    $conn->close();
+    exit;
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'message' => 'An error occurred: ' . $e->getMessage()]);
+    $conn->close();
+    exit;
 }
-
-$conn->close();
-?>
