@@ -20,9 +20,29 @@
 
     <!-- Main content start here -->
     <main class="main-content">
-        <div class="page-header mb-4">
-            <h1 class="page-title">Daily Reports</h1>
-            <p class="page-subtitle">Transportation summary and analytics</p>
+        <div class="page-header mb-4 d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div>
+                <h1 class="page-title">Daily Reports</h1>
+                <p class="page-subtitle">Transportation summary and analytics</p>
+            </div>
+            <!-- Download PDF Button -->
+            <a id="btn-download-pdf"
+               href="../api/generate-report.php"
+               target="_blank"
+               class="btn btn-primary d-inline-flex align-items-center gap-2 px-4 py-2"
+               style="background: linear-gradient(135deg,#6366f1,#818cf8);
+                      border: none;
+                      border-radius: 10px;
+                      font-weight: 600;
+                      font-size: 0.875rem;
+                      box-shadow: 0 4px 14px rgba(99,102,241,.45);
+                      transition: box-shadow .2s, transform .15s;"
+               onmouseover="this.style.boxShadow='0 6px 20px rgba(99,102,241,.65)';this.style.transform='translateY(-1px)'"
+               onmouseout="this.style.boxShadow='0 4px 14px rgba(99,102,241,.45)';this.style.transform='translateY(0)'"
+               title="Download full admin report as PDF">
+                <i class="bi bi-file-earmark-pdf-fill"></i>
+                Download PDF
+            </a>
         </div>
 
         <!-- Summary cards -->

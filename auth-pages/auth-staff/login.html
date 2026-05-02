@@ -34,7 +34,10 @@
                 <form id="staffLoginForm" class="d-flex flex-column gap-2">
                     <label for="staffUsername">Username or Email</label>
                     <input id="staffUsername" class="form-control" type="text" placeholder="Enter username or email" required>
-                    <label for="staffPassword">Password</label>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <label for="staffPassword">Password</label>
+                        <a href="../auth-admin/forgot-password.php" class="text-decoration-none" style="font-size:0.82rem;color:var(--primary);font-weight:600;">Forgot password?</a>
+                    </div>
                     <div class="input-group">
                         <input id="staffPassword" class="form-control" type="password" placeholder="Enter password" required>
                         <button class="btn btn-outline-secondary toggle-pw" type="button" tabindex="-1" data-target="staffPassword">
