@@ -13,23 +13,53 @@
 </head>
 <body>
     
-    <!-- Auth card -->
-    <div class="auth-card card rounded-4 d-flex">
+    <!-- Auth card (wider for signup) -->
+    <div class="auth-card auth-card--signup card rounded-4 d-flex">
         <div class="row">
-            <div class="left-side col-xl-6 col-sm-12 card-body p-5">
-                <div class="header d-flex align-items-center gap-2 mb-5">
-                    <div class="logo-box">
+            <div class="left-side left-side--signup col-xl-6 col-sm-12 card-body p-5">
+                <div class="header d-flex align-items-center mb-4">
+                    <div class="logo-box d-flex align-items-center gap-2">
                         <img src="../../assets/logo/smartsakaylogo.png" alt="">
+                        <span>Smart Sakay</span>
                     </div>
-                    <span>Smart Sakay</span>
                 </div>
-                <div class="title mb-3 text-center">Register an Account</div>
-                <form class="d-flex flex-column gap-1" action="login.html">
-                    <label for="">LGU ID</label>
-                    <input class="form-control" type="text" placeholder="e.g 0123456789" required>
-                    <label for="">Password</label>
-                    <input class="form-control" type="text" placeholder="Enter password" required>
-                    <button class="btn login-btn w-100 mt-3">Register</button>
+                <div class="title mb-3 text-center">Register as <span>Admin</span></div>
+
+                <!-- Inline alert notification -->
+                <div id="adminSignupAlert" class="alert auth-alert auth-alert--hidden" role="alert"></div>
+
+                <form id="adminSignupForm" class="d-flex flex-column gap-2">
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <label for="adminFirstName">First Name</label>
+                            <input id="adminFirstName" class="form-control" type="text" placeholder="First name" required>
+                        </div>
+                        <div class="col-6">
+                            <label for="adminLastName">Last Name</label>
+                            <input id="adminLastName" class="form-control" type="text" placeholder="Last name" required>
+                        </div>
+                    </div>
+                    <label for="adminRegUsername">Username <span class="text-danger">*</span></label>
+                    <input id="adminRegUsername" class="form-control" type="text" placeholder="Choose a unique username" required>
+                    <label for="adminEmail">Email Address</label>
+                    <input id="adminEmail" class="form-control" type="email" placeholder="Enter email address" required>
+                    <label for="adminContact">Contact Number</label>
+                    <input id="adminContact" class="form-control" type="tel" placeholder="e.g. 09171234567">
+                    <label for="adminRegPassword">Password <small class="text-muted fw-normal">(min. 8 characters)</small></label>
+                    <div class="input-group">
+                        <input id="adminRegPassword" class="form-control" type="password" placeholder="Create a password" required>
+                        <button class="btn btn-outline-secondary toggle-pw" type="button" tabindex="-1" data-target="adminRegPassword">
+                            <i class="bi bi-eye-slash"></i>
+                        </button>
+                    </div>
+                    <label for="adminConfirmPassword">Confirm Password</label>
+                    <div class="input-group">
+                        <input id="adminConfirmPassword" class="form-control" type="password" placeholder="Re-enter your password" required>
+                        <button class="btn btn-outline-secondary toggle-pw" type="button" tabindex="-1" data-target="adminConfirmPassword">
+                            <i class="bi bi-eye-slash"></i>
+                        </button>
+                    </div>
+                    <button type="submit" id="adminRegisterBtn" class="btn login-btn w-100 mt-3">Register</button>
                 </form>
                 <div class="text-center mt-2">Already have an LGU account? <a href="login.html">Sign in</a> </div>
             </div>
@@ -45,5 +75,22 @@
         </div>
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="../../scripts/auth.js"></script>
+    <script>
+        // Password visibility toggle
+        $(document).on('click', '.toggle-pw', function () {
+            const targetId = $(this).data('target');
+            const $input   = $('#' + targetId);
+            const $icon    = $(this).find('i');
+            if ($input.attr('type') === 'password') {
+                $input.attr('type', 'text');
+                $icon.removeClass('bi-eye-slash').addClass('bi-eye');
+            } else {
+                $input.attr('type', 'password');
+                $icon.removeClass('bi-eye').addClass('bi-eye-slash');
+            }
+        });
+    </script>
 </body>
 </html>

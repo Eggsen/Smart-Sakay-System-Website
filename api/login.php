@@ -2,19 +2,24 @@
 require_once 'db.php';
 header('Content-Type: application/json');
 
-$username = isset($_POST['username']) ? trim($_POST['username']) : '';
-$password = isset($_POST['password']) ? trim($_POST['password']) : '';
-$role_type = isset($_POST['role_type']) ? trim($_POST['role_type']) : 'Admin'; // 'Admin' or 'Staff'
+$identifier = isset($_POST['username']) ? trim($_POST['username']) : '';
+$password   = isset($_POST['password']) ? trim($_POST['password']) : '';
+$role_type  = isset($_POST['role_type']) ? trim($_POST['role_type']) : 'Admin';
 
-if (empty($username) || empty($password)) {
-    echo json_encode(['success' => false, 'message' => 'Username and password are required.']);
+if (empty($identifier) || empty($password)) {
+    echo json_encode(['success' => false, 'message' => 'Username/email and password are required.']);
     exit;
 }
 
+// Support login by username OR email
 if ($role_type === 'Staff') {
-    $stmt = $conn->prepare("SELECT staff_id, full_name, password_hash, status FROM staff WHERE username = ?");
+    $stmt = $conn->prepare(
+        "SELECT staff_id, full_name, password_hash, status FROM staff WHERE username = ? OR email = ? LIMIT 1"
+    );
 } else {
-    $stmt = $conn->prepare("SELECT employee_id, full_name, password_hash, role FROM admin WHERE username = ?");
+    $stmt = $conn->prepare(
+        "SELECT employee_id, full_name, password_hash, role FROM admin WHERE username = ? OR email = ? LIMIT 1"
+    );
 }
 
 if (!$stmt) {
@@ -22,23 +27,21 @@ if (!$stmt) {
     exit;
 }
 
-$stmt->bind_param("s", $username);
+$stmt->bind_param("ss", $identifier, $identifier);
 $stmt->execute();
 $result = $stmt->get_result();
 
 if ($result->num_rows === 1) {
     $user = $result->fetch_assoc();
-    
-    // Verify password (either using password_verify if hashed, or plain text comparison if they saved it directly)
+
     $password_match = false;
     if (password_verify($password, $user['password_hash'])) {
         $password_match = true;
-    } else if ($password === $user['password_hash']) {
-        $password_match = true; // Fallback for plain text passwords during testing
+    } elseif ($password === $user['password_hash']) {
+        $password_match = true; // fallback for plain-text during dev
     }
-    
+
     if ($password_match) {
-        // Check if status is Active (for staff)
         if ($role_type === 'Staff' && isset($user['status']) && $user['status'] !== 'Active') {
             echo json_encode(['success' => false, 'message' => 'Your account is inactive. Please contact support.']);
             exit;
@@ -47,17 +50,17 @@ if ($result->num_rows === 1) {
         echo json_encode([
             'success' => true,
             'message' => 'Login successful',
-            'role' => strtolower($role_type),
-            'user' => [
-                'id' => $role_type === 'Staff' ? $user['staff_id'] : $user['employee_id'],
+            'role'    => strtolower($role_type),
+            'user'    => [
+                'id'        => $role_type === 'Staff' ? $user['staff_id'] : $user['employee_id'],
                 'full_name' => $user['full_name']
             ]
         ]);
     } else {
-        echo json_encode(['success' => false, 'message' => 'Invalid username or password.']);
+        echo json_encode(['success' => false, 'message' => 'Invalid credentials. Please check your username/email and password.']);
     }
 } else {
-    echo json_encode(['success' => false, 'message' => 'Invalid username or password.']);
+    echo json_encode(['success' => false, 'message' => 'No account found with that username or email.']);
 }
 
 $stmt->close();

@@ -110,6 +110,20 @@ function loadTopbar() {
         pageText = pageText ? pageText.charAt(0).toUpperCase() + pageText.slice(1) : 'Dashboard';
       }
       if (pageSpan) pageSpan.textContent = pageText;
+
+      // Populate logged in user information
+      const uName = localStorage.getItem('userName');
+      const uRole = localStorage.getItem('userRole');
+
+      if (uName) {
+        const topbarName = placeholder.querySelector('#topbarUserName');
+        if (topbarName) topbarName.textContent = uName;
+      }
+      if (uRole) {
+        const topbarRole = placeholder.querySelector('#topbarUserRole');
+        if (topbarRole) topbarRole.textContent = uRole.toUpperCase();
+      }
+
       // Re-apply sidebar state in case topbar layout depends on sidebar width
       applySidebarState();
     })
@@ -302,15 +316,41 @@ function showDetail(tripId) {
             const pct = n => ((n / total) * 100).toFixed(1);
 
             $('#td-breakdown').html(`
-                <div class="p-3">
-                    <div class="mini-stat-card mb-3">
-                        Student: ${b.Student} (${pct(b.Student)}%)
+                <div class="p-3 breakdown-card">
+                    <div class="breakdown-total">Total Passengers: <strong>${b.Student + b.Regular + b.Senior}</strong></div>
+                    <div class="breakdown-progress">
+                        <div class="breakdown-progress-segment student" style="width: ${pct(b.Student)}%"></div>
+                        <div class="breakdown-progress-segment regular" style="width: ${pct(b.Regular)}%"></div>
+                        <div class="breakdown-progress-segment senior" style="width: ${pct(b.Senior)}%"></div>
                     </div>
-                    <div class="mini-stat-card mb-3">
-                        Regular: ${b.Regular} (${pct(b.Regular)}%)
-                    </div>
-                    <div class="mini-stat-card">
-                        Senior: ${b.Senior} (${pct(b.Senior)}%)
+                    <div class="breakdown-list">
+                        <div class="breakdown-item">
+                            <div class="breakdown-item-main">
+                                <span class="breakdown-dot student"></span>
+                                <span>Student</span>
+                            </div>
+                            <div class="breakdown-item-meta">
+                                <strong>${b.Student}</strong> (${pct(b.Student)}%)
+                            </div>
+                        </div>
+                        <div class="breakdown-item">
+                            <div class="breakdown-item-main">
+                                <span class="breakdown-dot regular"></span>
+                                <span>Regular</span>
+                            </div>
+                            <div class="breakdown-item-meta">
+                                <strong>${b.Regular}</strong> (${pct(b.Regular)}%)
+                            </div>
+                        </div>
+                        <div class="breakdown-item">
+                            <div class="breakdown-item-main">
+                                <span class="breakdown-dot senior"></span>
+                                <span>Senior</span>
+                            </div>
+                            <div class="breakdown-item-meta">
+                                <strong>${b.Senior}</strong> (${pct(b.Senior)}%)
+                            </div>
+                        </div>
                     </div>
                 </div>
             `);
