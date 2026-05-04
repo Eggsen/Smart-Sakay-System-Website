@@ -124,6 +124,16 @@ function loadTopbar() {
         if (topbarRole) topbarRole.textContent = uRole.toUpperCase();
       }
 
+      // Redirect to profile on chip click
+      const chip = placeholder.querySelector('.user-profile-chip');
+      if (chip) {
+        chip.style.cursor = 'pointer';
+        chip.addEventListener('click', () => {
+          const role = localStorage.getItem('userRole') || 'admin';
+          window.location.href = `../${role}/profile.html`;
+        });
+      }
+
       // Re-apply sidebar state in case topbar layout depends on sidebar width
       applySidebarState();
     })

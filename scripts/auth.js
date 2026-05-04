@@ -74,6 +74,7 @@ $(document).ready(function () {
                 if (response.success) {
                     localStorage.setItem('userRole', 'admin');
                     localStorage.setItem('userName', response.user.full_name);
+                    localStorage.setItem('userId', response.user.id);
                     showAuthAlert('adminLoginAlert', 'Login successful! Redirecting…', 'success');
                     setTimeout(() => { window.location.href = '../../admin/dashboard.html'; }, 800);
                 } else {
@@ -113,6 +114,7 @@ $(document).ready(function () {
                 if (response.success) {
                     localStorage.setItem('userRole', 'staff');
                     localStorage.setItem('userName', response.user.full_name);
+                    localStorage.setItem('userId', response.user.id);
                     showAuthAlert('staffLoginAlert', 'Login successful! Redirecting…', 'success');
                     setTimeout(() => { window.location.href = '../../staff/dashboard.html'; }, 800);
                 } else {
