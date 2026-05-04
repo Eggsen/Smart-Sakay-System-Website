@@ -191,6 +191,13 @@ label {
     background: linear-gradient(to bottom, var(--primary-pale), var(--secondary-pale)), url("../../assets/images/smart-sakay-bg-2.png") center/cover no-repeat;
 }
 
+@media (max-width: 768px) {
+    .right-side {
+        display: none;
+        width: 0px;
+    }
+}
+
 .mockup-img img {
     width: 250px;
     height: 180px;

@@ -32,13 +32,30 @@
                     <div class="profile-card">
                         <div class="profile-header-bg"></div>
                         <div class="card-body p-4 p-sm-5 d-block text-center text-sm-start">
-                            <div class="profile-avatar-container d-flex justify-content-center justify-content-sm-start">
-                                <div class="profile-avatar" id="profileAvatar">
-                                    <i class="bi bi-person-circle"></i>
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <div class="profile-avatar-container mb-0">
+                                    <div class="profile-avatar" id="profileAvatar">
+                                        <i class="bi bi-person-circle"></i>
+                                    </div>
+                                </div>
+                                <div id="profileActions">
+                                    <div id="viewActions">
+                                        <button class="btn btn-primary-action" id="btnEditProfile">
+                                            <i class="bi bi-pencil-square me-1"></i> Edit Profile
+                                        </button>
+                                    </div>
+                                    <div id="editActions" class="d-none gap-2">
+                                        <button class="btn btn-success" id="btnSaveProfile" style="border-radius: var(--radius-sm); font-size: 0.8rem; font-weight: 700;">
+                                            <i class="bi bi-check-lg me-1"></i> Save
+                                        </button>
+                                        <button class="btn btn-outline-secondary" id="btnCancelEdit" style="border-radius: var(--radius-sm); font-size: 0.8rem; font-weight: 700;">
+                                            Cancel
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                             
-                            <div class="row mt-4">
+                            <div class="row mt-4" id="profileFieldsContainer">
                                 <div class="col-sm-6">
                                     <div class="profile-field-label">Full Name</div>
                                     <div class="profile-field-value" id="profileFullName">Loading...</div>
@@ -83,66 +100,102 @@
         $(document).ready(function() {
             const userId = localStorage.getItem('userId');
             const userRole = localStorage.getItem('userRole') || 'staff';
-            const userName = localStorage.getItem('userName');
+            let currentUserData = {};
 
             const loadProfile = () => {
                 $.ajax({
                     url: '../api/profile.php',
                     method: 'GET',
-                    data: {
-                        id: userId,
-                        role: userRole,
-                        name: userName
-                    },
+                    data: { id: userId, role: userRole },
                     dataType: 'json',
                     success: function(response) {
                         if (response.success && response.user) {
-                            const u = response.user;
-                            $('#profileFullName').text(u.full_name || 'N/A');
-                            $('#profileUsername').text(u.username || 'N/A');
-                            $('#profileEmail').text(u.email || 'N/A');
-                            $('#profileContact').text(u.contact_number || 'N/A');
-                            
-                            // Role/Status Badge
-                            const roleText = u.role || u.status || userRole;
-                            $('#profileRole span').text(roleText.toUpperCase());
-                            
-                            if (roleText.toLowerCase() === 'admin' || roleText.toLowerCase().includes('admin')) {
-                                $('#profileRole').css({ 'background': 'var(--success-pale)', 'color': 'var(--success)', 'border-color': 'rgba(46,204,113,0.12)' });
-                                $('#profileRole i').removeClass('bi-person-fill').addClass('bi-shield-lock-fill');
-                            } else {
-                                $('#profileRole').css({ 'background': 'var(--secondary-pale)', 'color': 'var(--secondary)', 'border-color': 'rgba(11,72,111,0.08)' });
-                                $('#profileRole i').removeClass('bi-shield-lock-fill').addClass('bi-person-fill');
-                            }
-
-                            // Created at date
-                            if (u.created_at) {
-                                const dt = new Date(u.created_at);
-                                $('#profileCreatedAt').text(dt.toLocaleString('en-PH', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }));
-                            } else {
-                                $('#profileCreatedAt').text('N/A');
-                            }
-                        } else {
-                            // Render generic fallback info
-                            $('#profileFullName').text(userName || 'User');
-                            $('#profileRole span').text(userRole.toUpperCase());
-                            $('#profileUsername').text('N/A');
-                            $('#profileEmail').text('N/A');
-                            $('#profileContact').text('N/A');
-                            $('#profileCreatedAt').text('N/A');
+                            currentUserData = response.user;
+                            renderProfile(currentUserData);
                         }
-                    },
-                    error: function() {
-                        // Render generic fallback info
-                        $('#profileFullName').text(userName || 'User');
-                        $('#profileRole span').text(userRole.toUpperCase());
-                        $('#profileUsername').text('N/A');
-                        $('#profileEmail').text('N/A');
-                        $('#profileContact').text('N/A');
-                        $('#profileCreatedAt').text('N/A');
                     }
                 });
             };
+
+            const renderProfile = (u) => {
+                $('#profileFullName').text(u.full_name || 'N/A');
+                $('#profileUsername').text(u.username || 'N/A');
+                $('#profileEmail').text(u.email || 'N/A');
+                $('#profileContact').text(u.contact_number || 'N/A');
+                
+                const roleText = u.role || u.status || userRole;
+                $('#profileRole span').text(roleText.toUpperCase());
+                
+                if (u.created_at) {
+                    const dt = new Date(u.created_at);
+                    $('#profileCreatedAt').text(dt.toLocaleString('en-PH', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }));
+                }
+            };
+
+            $('#btnEditProfile').on('click', function() {
+                $('#viewActions').addClass('d-none');
+                $('#editActions').removeClass('d-none').addClass('d-flex');
+
+                // Convert text to inputs
+                $('#profileFullName').html(`<input type="text" class="form-control form-control-sm" id="editFullName" value="${currentUserData.full_name || ''}">`);
+                $('#profileUsername').html(`<input type="text" class="form-control form-control-sm" id="editUsername" value="${currentUserData.username || ''}">`);
+                $('#profileEmail').html(`<input type="email" class="form-control form-control-sm" id="editEmail" value="${currentUserData.email || ''}">`);
+                $('#profileContact').html(`<input type="text" class="form-control form-control-sm" id="editContact" value="${currentUserData.contact_number || ''}">`);
+            });
+
+            $('#btnCancelEdit').on('click', function() {
+                $('#editActions').addClass('d-none').removeClass('d-flex');
+                $('#viewActions').removeClass('d-none');
+                renderProfile(currentUserData);
+            });
+
+            $('#btnSaveProfile').on('click', function() {
+                const newData = {
+                    id: userId,
+                    role: userRole,
+                    full_name: $('#editFullName').val().trim(),
+                    username: $('#editUsername').val().trim(),
+                    email: $('#editEmail').val().trim(),
+                    contact_number: $('#editContact').val().trim()
+                };
+
+                if (!newData.full_name || !newData.username || !newData.email) {
+                    alert("Please fill in all required fields.");
+                    return;
+                }
+
+                const $btn = $(this);
+                $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1"></span> Saving...');
+
+                $.ajax({
+                    url: '../api/update-profile.php',
+                    method: 'POST',
+                    data: newData,
+                    dataType: 'json',
+                    success: function(res) {
+                        $btn.prop('disabled', false).html('<i class="bi bi-check-lg me-1"></i> Save');
+                        if (res.success) {
+                            currentUserData = { ...currentUserData, ...newData };
+                            localStorage.setItem('userName', newData.full_name);
+                            
+                            // Update UI elements that use the name
+                            const topbarName = document.querySelector('#topbarUserName');
+                            if (topbarName) topbarName.textContent = newData.full_name;
+
+                            $('#editActions').addClass('d-none').removeClass('d-flex');
+                            $('#viewActions').removeClass('d-none');
+                            renderProfile(currentUserData);
+                            alert(res.message);
+                        } else {
+                            alert(res.message);
+                        }
+                    },
+                    error: function() {
+                        $btn.prop('disabled', false).html('<i class="bi bi-check-lg me-1"></i> Save');
+                        alert("An error occurred while saving. Please try again.");
+                    }
+                });
+            });
 
             loadProfile();
         });
