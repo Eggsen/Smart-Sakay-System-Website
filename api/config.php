@@ -11,10 +11,10 @@
 
 // ── Environment ────────────────────────────────────────────────
 // Change to 'production' when deploying to InfinityFree.
-define('APP_ENV', 'production'); // 'local' | 'production'
+define('APP_ENV', 'local'); // 'local' | 'production'
 
 // ── Database credentials ───────────────────────────────────────
-define('DB_HOST', 'sql210.infinityfree.com');
+define('DB_HOST', 'localhost');
 
 if (APP_ENV === 'production') {
     // ⚠️ Fill these in before uploading to InfinityFree

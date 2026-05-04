@@ -39,12 +39,12 @@ while ($row = $result->fetch_assoc()) {
     // Passenger counts — use normal query instead of get_result() for shared hosting compatibility
     $pax = ['Student' => 0, 'Regular' => 0, 'Senior' => 0];
 
-    // Cast $tripId to int to prevent SQL injection if it were user input (it's from DB here so it's safe)
-    $tripIdSafe = (int)$tripId;
+    // Escape $tripId as a string to match the VARCHAR format (e.g. 'T-001')
+    $tripIdSafe = $conn->real_escape_string($tripId);
     $paxQuery = "
         SELECT passenger_type, COALESCE(SUM(quantity), 0) AS total
         FROM passenger_log
-        WHERE trip_id = $tripIdSafe AND action = 'Board'
+        WHERE trip_id = '$tripIdSafe' AND action = 'Board'
         GROUP BY passenger_type
     ";
     
