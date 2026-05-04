@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../../assets/logo/smartsakaylogo.png">
     <meta name="description" content="Smart Sakay – Reset Password. Set a new password for your account.">
     <link rel="stylesheet" href="../../bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="../auth-page-style/style.css">
