@@ -37,6 +37,20 @@ $activeTrips = (int)qVal($conn,
     "SELECT COUNT(*) AS total FROM trip WHERE status = 'Active'",
     'total');
 
+// ─── 4.5 YESTERDAY'S STATS (for trends) ──────────────────────────────────
+$tripsYesterday = (int)qVal($conn,
+    "SELECT COUNT(*) AS total FROM trip WHERE DATE(created_at) = CURDATE() - INTERVAL 1 DAY",
+    'total');
+
+$passengersYesterday = (int)qVal($conn,
+    "SELECT COALESCE(SUM(quantity), 0) AS total FROM passenger_log WHERE action = 'Board' AND DATE(logged_at) = CURDATE() - INTERVAL 1 DAY",
+    'total');
+
+$revenueYesterday = (float)qVal($conn,
+    "SELECT COALESCE(SUM(total_fare), 0) AS total FROM trip WHERE DATE(created_at) = CURDATE() - INTERVAL 1 DAY",
+    'total');
+
+
 // ─── 5. PASSENGER TYPE BREAKDOWN ─────────────────────────────────────────
 $breakdown = ['Student' => 0, 'Regular' => 0, 'Senior' => 0];
 $breakdownResult = $conn->query("
@@ -98,10 +112,13 @@ for ($h = $firstHour; $h <= $lastHour; $h++) {
 // ─── RESPONSE ────────────────────────────────────────────────────────────
 echo json_encode([
     'stats' => [
-        'tripsToday'      => $tripsToday,
-        'totalPassengers' => $totalPassengers,
-        'totalRevenue'    => $totalRevenue,
-        'activeTrips'     => $activeTrips,
+        'tripsToday'          => $tripsToday,
+        'totalPassengers'     => $totalPassengers,
+        'totalRevenue'        => $totalRevenue,
+        'activeTrips'         => $activeTrips,
+        'tripsYesterday'      => $tripsYesterday,
+        'passengersYesterday' => $passengersYesterday,
+        'revenueYesterday'    => $revenueYesterday,
     ],
     'breakdown' => $breakdown,
     'hourly' => [
