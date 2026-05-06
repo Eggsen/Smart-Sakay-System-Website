@@ -14,7 +14,8 @@ $sql = "
         v.vehicle_type,
         r.route_name,
         t.status,
-        t.total_fare
+        t.total_fare,
+        t.created_at
     FROM trip t
     JOIN driver  d ON t.driver_id  = d.driver_id
     JOIN vehicle v ON t.vehicle_id = v.vehicle_id
@@ -69,6 +70,7 @@ while ($row = $result->fetch_assoc()) {
         'fare'       => '&#8369;' . number_format((float)$row['total_fare'], 2),
         'license'    => $row['license_number'],
         'contact'    => $row['contact_number'],
+        'created_at' => $row['created_at'],
     ];
 }
 

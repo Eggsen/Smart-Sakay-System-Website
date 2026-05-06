@@ -228,10 +228,20 @@ function populateRouteFilter() {
 }
 
 function applyFilters() {
+    const q = ($('#tripSearchInput').val() || '').toLowerCase();
     const status = $('#filterStatus').val();
     const route  = $('#filterRoute').val();
+
     const result = tripsData.filter(function(t) {
-        return (!status || t.status === status) && (!route || t.route === route);
+        const matchStatus = !status || t.status === status;
+        const matchRoute = !route || t.route === route;
+        
+        // Search by Trip ID or Driver
+        const idStr = (t.id || '').toLowerCase();
+        const driverStr = (t.driver || '').toLowerCase();
+        const matchQ = !q || idStr.includes(q) || driverStr.includes(q);
+
+        return matchStatus && matchRoute && matchQ;
     });
     renderTable(result);
 }
@@ -773,6 +783,7 @@ function populateLogFilters() {
 }
 
 function applyLogFilters() {
+    const q = ($('#logSearchInput').val() || '').toLowerCase();
     const action = ($('#filterAction').val() || '').toString();
     const type = ($('#filterType').val() || '').toString();
     const payment = ($('#filterPayment').val() || '').toString();
@@ -781,7 +792,13 @@ function applyLogFilters() {
         const matchAction = !action || (l.action === action);
         const matchType = !type || (l.type === type);
         const matchPayment = !payment || ((l.payment || '').toString() === payment);
-        return matchAction && matchType && matchPayment;
+        
+        // Search by Trip ID or Stop
+        const tripStr = (l.trip || '').toLowerCase();
+        const stopStr = (l.stop || '').toLowerCase();
+        const matchQ = !q || tripStr.includes(q) || stopStr.includes(q);
+
+        return matchAction && matchType && matchPayment && matchQ;
     });
 
     renderLogs(result);
@@ -790,6 +807,7 @@ function applyLogFilters() {
 $(function () {
     loadLogs();
     // wire up log filter change handlers
+    $(document).on('input', '#logSearchInput', applyLogFilters);
     $(document).on('change', '#filterAction, #filterType, #filterPayment', applyLogFilters);
 });
 
@@ -937,6 +955,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Trips page
     if ($('#tripsTableBody').length || $('#filterStatus').length) {
         loadTrips();
+        $('#tripSearchInput').on('input', applyFilters);
         $('#filterStatus, #filterRoute').on('change', applyFilters);
         if ($('#tripsTableBody').length) {
             $('#tripsTableBody').on('click', '.btn-view-trip', function () {

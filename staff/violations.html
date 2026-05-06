@@ -183,6 +183,7 @@
             const filtered = violationsData.filter(v => {
                 const matchSev = !severity || v.severity === severity;
                 const matchQ = !q || (v.driver && v.driver.toLowerCase().includes(q)) || (v.type && v.type.toLowerCase().includes(q));
+                
                 return matchSev && matchQ;
             });
             renderViolations(filtered);

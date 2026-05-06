@@ -37,13 +37,14 @@
                         <h1 class="page-title">Trip Monitoring</h1>
                         <p class="page-subtitle">View active and completed trips</p>
                     </div>
-                    <div class="d-flex gap-2">
-                        <select class="form-select form-select-sm filter-select" id="filterStatus">
+                    <div class="d-flex flex-wrap gap-2 align-items-center">
+                        <input type="text" id="tripSearchInput" class="form-control form-control-sm filter-select" placeholder="Search ID or Driver" style="width: auto;">
+                        <select class="form-select form-select-sm filter-select" id="filterStatus" style="width: auto;">
                             <option value="">All Status</option>
                             <option value="Active">Active</option>
                             <option value="Completed">Completed</option>
                         </select>
-                        <select class="form-select form-select-sm filter-select" id="filterRoute">
+                        <select class="form-select form-select-sm filter-select" id="filterRoute" style="width: auto;">
                             <option value="">All Routes</option>
                         </select>
                     </div>
@@ -148,6 +149,7 @@
             // These event listeners exist in main.js but we must call loadTrips and setup filters
             loadTrips();
             
+            $('#tripSearchInput').on('input', applyFilters);
             $('#filterStatus, #filterRoute').on('change', applyFilters);
             $('#btnBack').on('click', showList);
 

@@ -202,6 +202,7 @@
             const filtered = complaintsData.filter(c => {
                 const matchStatus = !status || c.status === status;
                 const matchQ = !q || (c.passenger && c.passenger.toLowerCase().includes(q)) || (c.driver && c.driver.toLowerCase().includes(q)) || (c.text && c.text.toLowerCase().includes(q));
+                
                 return matchStatus && matchQ;
             });
             renderComplaints(filtered);
